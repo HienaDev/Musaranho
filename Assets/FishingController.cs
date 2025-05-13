@@ -22,21 +22,12 @@ public class FishingController : MonoBehaviour, IItem
     private float chargeTime;
     private float startedCharging;
 
-    [SerializeField] private FishSpawner fishManager;
-
     // LeftClickItem method to start casting the fishing line
     public void LeftClickItem()
     {
         if (!isCasting)
         {
-            if (isCast)
-            {
-                UncastLine();
-            }
-            else
-            {
-                CastLine();
-            }
+            CastLine();
         }
     }
     // LeftHoldItem method to hold the fishing line
@@ -69,7 +60,6 @@ public class FishingController : MonoBehaviour, IItem
     public void RightReleaseItem() { }
     private void CastLine()
     {
-        
         isCasting = true;
         // Logic to cast the fishing line
         Debug.Log("Casting line...");
@@ -92,7 +82,7 @@ public class FishingController : MonoBehaviour, IItem
 
         animator.SetTrigger("Uncast");
 
-        lure.SetActive(true);
+        throwableLure.SetActive(true);
         throwableLure.SetActive(false);
     }
     private void ReelInLine()
@@ -116,10 +106,7 @@ public class FishingController : MonoBehaviour, IItem
         lure.SetActive(false);
         throwableLure.SetActive(true);
         throwableLure.transform.position = rodTip.position;
-        float castDistanceMultiplier = Mathf.Min((Time.time - startedCharging), 2f);
-        throwableLure.GetComponent<Rigidbody>().AddForce(player.forward * (castDistance), ForceMode.Impulse);
-
-        fishManager.ToggleFishSpawn(true);
+        throwableLure.GetComponent<Rigidbody>().AddForce(fishingRod.forward * (castDistance * Time.time - startedCharging), ForceMode.Impulse);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

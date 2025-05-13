@@ -21,6 +21,9 @@ public class PlayerControl : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape)) gameManager.ClickEscapeButton();
 
+        // Q = drop
+        
+        // E = interact
         if (Input.GetKeyDown(KeyCode.E))
         {
             RaycastHit hit;
