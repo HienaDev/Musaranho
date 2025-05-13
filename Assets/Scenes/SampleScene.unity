@@ -14,10 +14,10 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
+  m_Fog: 1
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.1
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -1424,6 +1424,57 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748311410}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &755060285
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 755060286}
+  - component: {fileID: 755060287}
+  m_Layer: 0
+  m_Name: FishManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &755060286
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755060285}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &755060287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 755060285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9a3af89f72e3a84da4da6178deb140d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fishPrefab: {fileID: 2420605905155612260, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+  fishSpawnCooldown: 10
+  spawnUnderThis: {fileID: 1884422043}
+  spawnRadius: 5
+  spawnCount: 2
+  minHeight: 0.5
+  maxHeight: 2
 --- !u!1 &790742107
 GameObject:
   m_ObjectHideFlags: 0
@@ -2661,8 +2712,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f5cae508b4059f429c88f7290d967ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasMenu: {fileID: 1788886681}
   playerControl: {fileID: 0}
+  canvasMenu: {fileID: 1788886681}
   sensitivityInputField: {fileID: 0}
   sensitivitySlider: {fileID: 0}
   minSensitivity: 0.01
@@ -3122,15 +3173,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b46f27ab33e6c34a911f2f27b17bdb1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1618393122}
+  player: {fileID: 1407243819}
   fishingRod: {fileID: 1815929593}
   fishingLine: {fileID: 0}
-  castDistance: 10
+  castDistance: 8
   reelSpeed: 5
   lure: {fileID: 1649322804}
   animator: {fileID: 554963925}
   throwableLure: {fileID: 1884422039}
   rodTip: {fileID: 463044969}
+  fishManager: {fileID: 0}
 --- !u!1 &1649322804
 GameObject:
   m_ObjectHideFlags: 0
@@ -3224,7 +3276,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 753ec71305fc94944bef765285f97721, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3291,6 +3343,7 @@ MonoBehaviour:
   damping: 0.5
   movementInfluence: 0
   randomMovement: 0.2
+  physics: 1
 --- !u!114 &1649322813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4038,6 +4091,8 @@ GameObject:
   - component: {fileID: 1884422040}
   - component: {fileID: 1884422044}
   - component: {fileID: 1884422045}
+  - component: {fileID: 1884422046}
+  - component: {fileID: 1884422047}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -4089,7 +4144,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 753ec71305fc94944bef765285f97721, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4129,7 +4184,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.65, y: 1.57, z: 8.74}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1783894278}
@@ -4160,7 +4215,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!114 &1884422045
 MonoBehaviour:
@@ -4176,13 +4231,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waterPlane: {fileID: 790742111}
   buoyancyForce: 15
-  waterDrag: 1
+  waterDrag: 5
   waterAngularDrag: 1
   bounceDamping: 0.5
-  floatHeight: 0.05
+  floatHeight: 0.025
   useWaves: 1
-  waveFrequency: 0.02
-  waveAmplitude: 0.5
+  waveFrequency: 0.01
+  waveAmplitude: 0.25
+--- !u!114 &1884422046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884422039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a04afc599fceb2e4bb04f458323ad2d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attachPoint: {fileID: 463044969}
+  renderLine: 1
+  lineWidth: 0.01
+  lineMaterial: {fileID: 2100000, guid: 6f0fab2ab5bc49d4cb2a41567eb9d8a8, type: 2}
+  lineColor: {r: 1, g: 1, b: 1, a: 1}
+  lineLength: 2
+  gravity: 9.8
+  damping: 0.1
+  movementInfluence: 2
+  randomMovement: 0.2
+  physics: 0
+--- !u!114 &1884422047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884422039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0c1431378e103142837688855069e97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attractiveness: 0.5
+  visibilityRange: 8
+  moveSpeed: 1
+  rippleEffect: {fileID: 0}
+  lureSoundEffect: {fileID: 0}
 --- !u!1 &1962253699
 GameObject:
   m_ObjectHideFlags: 0
@@ -4440,3 +4535,4 @@ SceneRoots:
   - {fileID: 1993457985}
   - {fileID: 1566965647}
   - {fileID: 1788886681}
+  - {fileID: 755060286}
