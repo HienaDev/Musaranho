@@ -16,8 +16,7 @@ public class PlayerControl : MonoBehaviour
 
     private void Update()
     {
-        // cause of editor, changed to SPACE
-        if (Input.GetKeyDown(KeyCode.Space)) gameManager.ClickEscapeButton();
+        if (Input.GetKeyDown(KeyCode.Escape)) gameManager.ClickEscapeButton();
     }
 
     public void UpdateCamSensitivity()

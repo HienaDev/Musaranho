@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,7 +6,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
 
-    [SerializeField] private Transform canvasMenu;
     [SerializeField] private PlayerControl playerControl;
     
     private bool _canPlayerMove = false;
@@ -14,13 +14,34 @@ public class GameManager : MonoBehaviour
 
     private float _playerCameraSense = 2f;
     public float GetPlayerCameraSensitivity() => _playerCameraSense;
+
+    private float[] _dailyWeightNeeded;
+    /// <summary>
+    /// Return value of weight needed for a day.
+    /// </summary>
+    /// <param name="day">counter of the day, starting at 0</param>
+    /// <returns></returns>
+    public float GetDailyWeightNeeded(int day = 0)
+    {
+        return _dailyWeightNeeded[day];
+    }
     
     private void Start()
     {
         _canPlayerMove = true;
         canvasMenu.gameObject.SetActive(false);
-        //Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        LoadJsonData();
+    }
+
+    private void LoadJsonData()
+    {
+        TextAsset jsonTextAsset = Resources.Load<TextAsset>("gameplayData");
+        Debug.Log("Text: "+ jsonTextAsset.text);
+        GameplayData data = JsonUtility.FromJson<GameplayData>(jsonTextAsset.text);
+        _dailyWeightNeeded = data.values;
     }
 
     public void ClickEscapeButton()
@@ -33,6 +54,7 @@ public class GameManager : MonoBehaviour
     {
         _canPlayerMove = false;
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
+        Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
 
@@ -40,17 +62,31 @@ public class GameManager : MonoBehaviour
     {
         _canPlayerMove = true;
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
+        Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
     
     /*
      * MENU OPTIONS STUFF
      */
+    [SerializeField] private Transform canvasMenu;
     [Space][Header("Menu Options Stuff")]
     [SerializeField] private TMP_InputField sensitivityInputField;
     [SerializeField] private Slider sensitivitySlider;
     [SerializeField] private float minSensitivity = 0.01f;
     [SerializeField] private float maxSensitivity = 10f;
+
+    public void ClickOptionsButton()
+    {
+        canvasMenu.transform.Find("Menu").gameObject.SetActive(false);
+        canvasMenu.transform.Find("OptionsMenu").gameObject.SetActive(true);
+    }
+
+    public void ClickBackFromOptions()
+    {
+        canvasMenu.transform.Find("Menu").gameObject.SetActive(true);
+        canvasMenu.transform.Find("OptionsMenu").gameObject.SetActive(false);
+    }
     
     public void ChangedSenseInput()
     {
@@ -67,10 +103,16 @@ public class GameManager : MonoBehaviour
     {
         value = Mathf.Max(value, minSensitivity);
         value = Mathf.Min(value, maxSensitivity);
-        UpdateInputFieldValue(value.ToString());
+        UpdateInputFieldValue($"{value:F2}");
         UpdateSliderValue(value);
         _playerCameraSense = value;
         playerControl.UpdateCamSensitivity();
     }
 
+}
+
+[Serializable]
+public class GameplayData
+{
+    public float[] values;
 }
