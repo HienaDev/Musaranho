@@ -46,6 +46,8 @@ public class FishingLineObject : MonoBehaviour
     private Vector3 lastAttachPointPosition;
     private LineRenderer lineRenderer;
 
+    [SerializeField] private bool physics = true; // Toggle for physics simulation
+
     void Start()
     {
         // If no attach point is assigned, try to find a parent to use
@@ -106,58 +108,62 @@ public class FishingLineObject : MonoBehaviour
         if (attachPoint == null)
             return;
 
-        // Calculate rod movement velocity
-        Vector3 attachPointVelocity = (attachPoint.position - lastAttachPointPosition) / Time.deltaTime;
-        lastAttachPointPosition = attachPoint.position;
-
-        // Set up forces
-        Vector3 gravityForce = Vector3.down * gravity;
-
-        // Calculate the direction from attach point to object
-        Vector3 lineDirection = (transform.position - attachPoint.position).normalized;
-
-        // Calculate distance from attach point to object
-        float distance = Vector3.Distance(transform.position, attachPoint.position);
-
-        // Calculate spring force (if stretched beyond line length)
-        Vector3 springForce = Vector3.zero;
-        if (distance > lineLength)
+        if(physics)
         {
-            // Apply spring force based on how far beyond the line length we are
-            springForce = -lineDirection * ((distance - lineLength) * 10f);
+            // Calculate rod movement velocity
+            Vector3 attachPointVelocity = (attachPoint.position - lastAttachPointPosition) / Time.deltaTime;
+            lastAttachPointPosition = attachPoint.position;
+
+            // Set up forces
+            Vector3 gravityForce = Vector3.down * gravity;
+
+            // Calculate the direction from attach point to object
+            Vector3 lineDirection = (transform.position - attachPoint.position).normalized;
+
+            // Calculate distance from attach point to object
+            float distance = Vector3.Distance(transform.position, attachPoint.position);
+
+            // Calculate spring force (if stretched beyond line length)
+            Vector3 springForce = Vector3.zero;
+            if (distance > lineLength)
+            {
+                // Apply spring force based on how far beyond the line length we are
+                springForce = -lineDirection * ((distance - lineLength) * 10f);
+            }
+
+            // Calculate damping force (air resistance)
+            Vector3 dampingForce = -velocity * damping;
+
+            // Apply rod movement influence
+            Vector3 movementForce = attachPointVelocity * movementInfluence;
+
+            // Add random movement
+            Vector3 randomForce = new Vector3(
+                Random.Range(-1f, 1f),
+                Random.Range(-1f, 1f),
+                Random.Range(-1f, 1f)
+            ) * randomMovement;
+
+            // Sum all forces to get acceleration
+            acceleration = gravityForce + springForce + dampingForce + movementForce + randomForce;
+
+            // Update velocity and position with simple physics integration
+            velocity += acceleration * Time.deltaTime;
+            transform.position += velocity * Time.deltaTime;
+
+            // Enforce maximum line length constraint
+            if (distance > lineLength)
+            {
+                // Correct position to be exactly at line length
+                transform.position = attachPoint.position + lineDirection * lineLength;
+
+                // Project velocity onto the tangent plane of the sphere defined by the line length
+                Vector3 velocityRadial = Vector3.Project(velocity, lineDirection);
+                Vector3 velocityTangential = velocity - velocityRadial;
+                velocity = velocityTangential;
+            }
         }
 
-        // Calculate damping force (air resistance)
-        Vector3 dampingForce = -velocity * damping;
-
-        // Apply rod movement influence
-        Vector3 movementForce = attachPointVelocity * movementInfluence;
-
-        // Add random movement
-        Vector3 randomForce = new Vector3(
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f),
-            Random.Range(-1f, 1f)
-        ) * randomMovement;
-
-        // Sum all forces to get acceleration
-        acceleration = gravityForce + springForce + dampingForce + movementForce + randomForce;
-
-        // Update velocity and position with simple physics integration
-        velocity += acceleration * Time.deltaTime;
-        transform.position += velocity * Time.deltaTime;
-
-        // Enforce maximum line length constraint
-        if (distance > lineLength)
-        {
-            // Correct position to be exactly at line length
-            transform.position = attachPoint.position + lineDirection * lineLength;
-
-            // Project velocity onto the tangent plane of the sphere defined by the line length
-            Vector3 velocityRadial = Vector3.Project(velocity, lineDirection);
-            Vector3 velocityTangential = velocity - velocityRadial;
-            velocity = velocityTangential;
-        }
 
         // Update line renderer positions
         if (renderLine && lineRenderer != null)

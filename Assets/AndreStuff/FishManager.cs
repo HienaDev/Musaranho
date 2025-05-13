@@ -9,9 +9,7 @@ namespace AndreStuff
     public class FishManager : MonoBehaviour
     {
 
-        public string _debug;
-        private FishData _fishData;
-        public FishData GetFishData() => _fishData;
+        private FishData _fishData = null;
         private void Start()
         {
             // created function cause not sure if needed to generate fish after Start.
@@ -24,49 +22,25 @@ namespace AndreStuff
             List<FishType> fishes = Enum.GetValues(typeof(FishType)).Cast<FishType>().ToList();
 
             // change later weight depending on rarity.
-            int weightChance = Random.Range(0, 100);
-            FishWeight weightType = GetFishWeightType(weightChance);
-            (float min, float max) weightRange = GetFishWeightRange(weightType);
-            float weight = Random.Range(weightRange.min, weightRange.max);
-            FishType fishType = fishes[Random.Range(0, fishes.Count)];
-            _fishData = new FishData(fishType, weightType, weight);
-            _debug = $"{fishType} {weightType} {weight}";
-        }
-        
-        private FishWeight GetFishWeightType(int weightChance)
-        {
-            return weightChance switch
-            {
-                <= 40 => FishWeight.LIGHT,
-                    <= 70 => FishWeight.MEDIUM,
-                    <= 90 => FishWeight.HEAVY,
-                _ => FishWeight.GIANT
-            };
-        }
-
-        private (float, float) GetFishWeightRange(FishWeight weightType)
-        {
-            return weightType switch
-            {
-                FishWeight.LIGHT => (0.1f, 1.5f),
-                FishWeight.MEDIUM => (1.5f, 10f),
-                FishWeight.HEAVY => (10f, 50f),
-                _ => (50f, 300f)
-            };
+            float weight = 1f;
+            _fishData = new FishData(fishes[Random.Range(0, fishes.Count)], weight);
         }
     }
 
     public class FishData
     {
-        public float Weight { get; }
-        public FishWeight WeighType { get; }
-        public FishType FishType { get; }
+        private float _weight = 0f;
+        private FishType _fishType;
+        
+        public float GetWeight() => _weight;
+        public FishType GetFishType() => _fishType;
+        public void UpdateFishType(FishType fishType) => _fishType = fishType;
+        public void UpdateWeight(float value) => _weight = value;
 
-        public FishData(FishType fishType, FishWeight weightType, float weight)
+        public FishData(FishType fishType, float weight)
         {
-            FishType = fishType;
-            WeighType = weightType;
-            Weight = weight;
+            _fishType = fishType;
+            _weight = weight;
         }
     }
 }
