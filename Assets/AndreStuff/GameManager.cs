@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -56,6 +58,13 @@ public class GameManager : MonoBehaviour
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        CenterCursor();
+    }
+
+    private void CenterCursor()
+    {
+        Vector2 centerPosition = new Vector2(Screen.width / 2, Screen.height / 2);
+        Mouse.current.WarpCursorPosition(centerPosition);
     }
 
     private void ClosePauseMenu()
@@ -64,6 +73,7 @@ public class GameManager : MonoBehaviour
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        CenterCursor();
     }
     
     /*

@@ -28,13 +28,12 @@ public class PlayerMovement : MonoBehaviour
     
     private void Update()
     {
+        HandleCamera(_playerControl.GetGameManager().CanPlayerMove());
         if (!_playerControl.GetGameManager().CanPlayerMove())
         {
             _rb.linearVelocity = new Vector3(0f, _rb.linearVelocity.y, 0f);
             return;
         }
-
-        HandleCamera();
         HandleMovement();
     }
 
@@ -42,18 +41,19 @@ public class PlayerMovement : MonoBehaviour
     private float _rotationX, _rotationY;
     private float _currentRotationX, _currentRotationY;
     private float _velocityX, _velocityY;
-    private void HandleCamera()
+    private void HandleCamera(bool acceptNewMovements = true)
     {
         
-        _rotationX += Input.GetAxis("Mouse X") * _camSensitivity;
-        _rotationY += Input.GetAxis("Mouse Y") * _camSensitivity;
+        if (acceptNewMovements) _rotationX += Input.GetAxis("Mouse X") * _camSensitivity;
+        if (acceptNewMovements) _rotationY += Input.GetAxis("Mouse Y") * _camSensitivity;
         
         _rotationY = Mathf.Clamp(_rotationY, -maxLookUpAngle, maxLookDownAngle);
         
         _currentRotationX = Mathf.SmoothDamp(_currentRotationX, _rotationX, ref _velocityX, _smoothTime);
         _currentRotationY = Mathf.SmoothDamp(_currentRotationY, _rotationY, ref _velocityY, _smoothTime);
         
-        _cam.transform.localRotation = Quaternion.Euler(-_currentRotationY, _currentRotationX, 0);
+        _cam.transform.localRotation = Quaternion.Euler(-_currentRotationY, 0, 0);
+        transform.localRotation = Quaternion.Euler(0, _currentRotationX, 0);
     }
     
     private void HandleMovement()
