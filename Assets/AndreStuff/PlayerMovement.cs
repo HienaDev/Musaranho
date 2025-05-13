@@ -1,33 +1,29 @@
-using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
     
     [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float lookSensitivity = 2f;
     [SerializeField] private float maxLookUpAngle = 80f;
     [SerializeField] private float maxLookDownAngle = 80f;
+    private float _camSensitivity = 2f;
 
     private Camera _cam;
     private Rigidbody _rb;
-    private float cameraPitch = 0f;
     private PlayerControl _playerControl;
+
+    public void UpdateSensitivity(float value) => _camSensitivity = value;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _playerControl = GetComponent<PlayerControl>();
+        _playerControl.SetupPlayerMovement(this);
     }
 
     private void Start()
     {
         _cam = Camera.main;
-        
-        _rb.freezeRotation = true;
-        _rb.useGravity = true;
-        _rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-        _rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
     
     private void Update()
@@ -38,46 +34,26 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        MoveCamera2();
+        HandleCamera();
         HandleMovement();
     }
 
-    public float sensitivity = 2.0f;
-    public float smoothTime = 0.002f;
-    
-    private float rotationX;
-    private float rotationY;
-    private float currentRotationX;
-    private float currentRotationY;
-    private float velocityX;
-    private float velocityY;
-    private void MoveCamera2()
+    private float _smoothTime = 0.002f;
+    private float _rotationX, _rotationY;
+    private float _currentRotationX, _currentRotationY;
+    private float _velocityX, _velocityY;
+    private void HandleCamera()
     {
         
-        rotationX += Input.GetAxis("Mouse X") * sensitivity;
-        rotationY += Input.GetAxis("Mouse Y") * sensitivity;
+        _rotationX += Input.GetAxis("Mouse X") * _camSensitivity;
+        _rotationY += Input.GetAxis("Mouse Y") * _camSensitivity;
         
-        // Clamp vertical rotation (prevents camera flipping)
-        rotationY = Mathf.Clamp(rotationY, -90f, 90f);
+        _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
         
-        // Smooth the rotation using SmoothDamp
-        currentRotationX = Mathf.SmoothDamp(currentRotationX, rotationX, ref velocityX, smoothTime);
-        currentRotationY = Mathf.SmoothDamp(currentRotationY, rotationY, ref velocityY, smoothTime);
+        _currentRotationX = Mathf.SmoothDamp(_currentRotationX, _rotationX, ref _velocityX, _smoothTime);
+        _currentRotationY = Mathf.SmoothDamp(_currentRotationY, _rotationY, ref _velocityY, _smoothTime);
         
-        // Apply rotation
-        _cam.transform.localRotation = Quaternion.Euler(-currentRotationY, currentRotationX, 0);
-    }
-    
-    private void HandleMouseLook()
-    {
-        float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
-        
-        cameraPitch -= mouseY;
-        cameraPitch = Mathf.Clamp(cameraPitch, -maxLookUpAngle, maxLookDownAngle);
-        
-        _cam.transform.localRotation = Quaternion.Euler(cameraPitch, 0f, 0f);
-        transform.Rotate(Vector3.up * mouseX);
+        _cam.transform.localRotation = Quaternion.Euler(-_currentRotationY, _currentRotationX, 0);
     }
     
     private void HandleMovement()
