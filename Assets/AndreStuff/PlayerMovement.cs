@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
         _rotationX += Input.GetAxis("Mouse X") * _camSensitivity;
         _rotationY += Input.GetAxis("Mouse Y") * _camSensitivity;
         
-        _rotationY = Mathf.Clamp(_rotationY, -90f, 90f);
+        _rotationY = Mathf.Clamp(_rotationY, -maxLookUpAngle, maxLookDownAngle);
         
         _currentRotationX = Mathf.SmoothDamp(_currentRotationX, _rotationX, ref _velocityX, _smoothTime);
         _currentRotationY = Mathf.SmoothDamp(_currentRotationY, _rotationY, ref _velocityY, _smoothTime);
