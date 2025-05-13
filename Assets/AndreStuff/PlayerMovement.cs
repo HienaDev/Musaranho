@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
         _playerControl = GetComponent<PlayerControl>();
     }
 
-    void Start()
+    private void Start()
     {
         _cam = Camera.main;
         
@@ -30,22 +30,45 @@ public class PlayerMovement : MonoBehaviour
         _rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
     
-    void Update()
+    private void Update()
     {
         if (!_playerControl.GetGameManager().CanPlayerMove())
         {
             _rb.linearVelocity = new Vector3(0f, _rb.linearVelocity.y, 0f);
             return;
         }
-        HandleMouseLook();
-    }
-    
-    void FixedUpdate()
-    {
+
+        MoveCamera2();
         HandleMovement();
     }
+
+    public float sensitivity = 2.0f;
+    public float smoothTime = 0.002f;
     
-    void HandleMouseLook()
+    private float rotationX;
+    private float rotationY;
+    private float currentRotationX;
+    private float currentRotationY;
+    private float velocityX;
+    private float velocityY;
+    private void MoveCamera2()
+    {
+        
+        rotationX += Input.GetAxis("Mouse X") * sensitivity;
+        rotationY += Input.GetAxis("Mouse Y") * sensitivity;
+        
+        // Clamp vertical rotation (prevents camera flipping)
+        rotationY = Mathf.Clamp(rotationY, -90f, 90f);
+        
+        // Smooth the rotation using SmoothDamp
+        currentRotationX = Mathf.SmoothDamp(currentRotationX, rotationX, ref velocityX, smoothTime);
+        currentRotationY = Mathf.SmoothDamp(currentRotationY, rotationY, ref velocityY, smoothTime);
+        
+        // Apply rotation
+        _cam.transform.localRotation = Quaternion.Euler(-currentRotationY, currentRotationX, 0);
+    }
+    
+    private void HandleMouseLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
@@ -57,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
     
-    void HandleMovement()
+    private void HandleMovement()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
