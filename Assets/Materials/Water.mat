@@ -73,7 +73,7 @@ Material:
     - _Smoothness: 0
     - _SrcBlend: 1
     - _Surface: 1
-    - _Transpanrency: 0.75
+    - _Transpanrency: 0.5
     - _WorkflowMode: 1
     - _ZTest: 4
     - _ZWrite: 0

@@ -18,11 +18,13 @@ public class FishingController : MonoBehaviour, IItem
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject throwableLure;
     [SerializeField] private Transform rodTip;
+    [SerializeField] private GameObject particleSystemRipplesLure;
 
     private float chargeTime;
     private float startedCharging;
 
     [SerializeField] private FishSpawner fishManager;
+    private bool fishBiting = false;
 
     // LeftClickItem method to start casting the fishing line
     public void LeftClickItem()
@@ -31,7 +33,12 @@ public class FishingController : MonoBehaviour, IItem
         {
             if (isCast)
             {
-                UncastLine();
+                if(fishBiting)
+                {
+
+                }
+                else
+                    UncastLine();
             }
             else
             {
@@ -79,6 +86,10 @@ public class FishingController : MonoBehaviour, IItem
         startedCharging = Time.time;
     }
 
+    public void TogglePullingLine(bool toggle)
+    {
+        particleSystemRipplesLure.SetActive(toggle);
+    }
  
 
     private void UncastLine()
