@@ -211,7 +211,7 @@ MonoBehaviour:
   mouth: {fileID: 6814604058412106625}
   minDistanceToLure: 0.2
   speed: 1
-  maxTimeOnLure: 10
+  maxTimeOnLure: 1
   giveUpDuration: 5
   rotationSpeed: 5
   diveAngleRange: 30

@@ -1472,7 +1472,7 @@ MonoBehaviour:
   fishSpawnCooldown: 10
   spawnUnderThis: {fileID: 1884422043}
   spawnRadius: 5
-  spawnCount: 2
+  spawnCount: 1
   minHeight: 0.5
   maxHeight: 2
 --- !u!1 &790742107
@@ -3182,7 +3182,7 @@ MonoBehaviour:
   animator: {fileID: 554963925}
   throwableLure: {fileID: 1884422039}
   rodTip: {fileID: 463044969}
-  fishManager: {fileID: 0}
+  fishManager: {fileID: 755060287}
 --- !u!1 &1649322804
 GameObject:
   m_ObjectHideFlags: 0
