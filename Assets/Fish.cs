@@ -21,18 +21,21 @@ public class Fish : MonoBehaviour
     private bool isActive = true;
     private bool ripplesActive = false;
 
+    private FishingController fishingController;    
+
     private void Start()
     {
         
     }
 
-    public void SetLureTarget(Transform target)
+    public void SetLureTarget(Transform target, FishingController fishingController)
     {
         lureTarget = target;
         timeOnLure = 0f;
         hasGivenUp = false;
         isActive = true;
         ripplesActive = false;
+        this.fishingController = fishingController;
     }
 
     void Update()
@@ -67,6 +70,7 @@ public class Fish : MonoBehaviour
             {
                 ripplesActive = true;
                 //activate ripples
+                fishingController.TogglePullingLine(true);
             }
 
             Vector3 direction = (lureTarget.position - mouth.position).normalized;
@@ -88,6 +92,7 @@ public class Fish : MonoBehaviour
                 if (timeOnLure >= maxTimeOnLure)
                 {
                     GiveUp();
+                    fishingController.TogglePullingLine(false);
                 }
             }
         }
@@ -124,6 +129,7 @@ public class Fish : MonoBehaviour
 
     private void Disappear()
     {
+        
         isActive = false;
         gameObject.SetActive(false);
     }

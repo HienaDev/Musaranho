@@ -17,6 +17,10 @@ public class FishSpawner : MonoBehaviour
     [SerializeField] private float minHeight = 0.5f; // Minimum height below the object
     [SerializeField] private float maxHeight = 2f; // Maximum height below the object
 
+    [SerializeField] private FishingController fishingController;
+
+    [SerializeField] private int chanceToSpawn = 20; // Chance to spawn fish (0-100)
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -28,7 +32,11 @@ public class FishSpawner : MonoBehaviour
     {
         if(canSpawnFish && Time.time - justSpawnedFish > fishSpawnCooldown)
         {
-            SpawnFish();
+            if(Random.Range(0, 100) < chanceToSpawn)
+            {
+                SpawnFish();
+            }
+
             justSpawnedFish = Time.time;
         }
     }
@@ -56,12 +64,13 @@ public class FishSpawner : MonoBehaviour
             // Instantiate the object
             Fish fish = Instantiate(fishPrefab, spawnPosition, Quaternion.identity);
 
-            fish.SetLureTarget(spawnUnderThis); // Set the target for the fish to swim towards
+            fish.SetLureTarget(spawnUnderThis, fishingController); // Set the target for the fish to swim towards
         }
     }
 
     public void ToggleFishSpawn(bool canSpawn)
     {
+        justSpawnedFish = Time.time;
         canSpawnFish = canSpawn;
     }
 }
