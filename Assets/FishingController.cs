@@ -82,7 +82,7 @@ public class FishingController : MonoBehaviour, IItem
 
         animator.SetTrigger("Uncast");
 
-        throwableLure.SetActive(true);
+        lure.SetActive(true);
         throwableLure.SetActive(false);
     }
     private void ReelInLine()
@@ -106,7 +106,7 @@ public class FishingController : MonoBehaviour, IItem
         lure.SetActive(false);
         throwableLure.SetActive(true);
         throwableLure.transform.position = rodTip.position;
-        throwableLure.GetComponent<Rigidbody>().AddForce(fishingRod.forward * (castDistance * Time.time - startedCharging), ForceMode.Impulse);
+        throwableLure.GetComponent<Rigidbody>().AddForce(fishingRod.forward * (castDistance), ForceMode.Impulse);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
