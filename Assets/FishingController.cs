@@ -121,6 +121,23 @@ public class FishingController : MonoBehaviour, IItem
     {
         hitMarker.enabled = true;
         ToggleFishingUI(true);
+
+        switch(currentfish.fishData.WeighType)
+        {
+            case FishWeight.LIGHT:
+                numberOfReels = 2;
+                break;
+            case FishWeight.MEDIUM:
+                numberOfReels = 3;
+                break;
+            case FishWeight.HEAVY:
+                numberOfReels = 4;
+                break;
+            case FishWeight.GIANT:
+                numberOfReels = 5;
+                break;
+        }
+
         yield return new WaitForSeconds(time);
         if (currentfish != null)
         {
@@ -218,6 +235,7 @@ public class FishingController : MonoBehaviour, IItem
         isReeling = false;
         isCast = false;
         isFishing = false;
+        currentAmountOfReels = 0;
         // Logic to uncast the fishing line
         Debug.Log("Uncasting line...");
         // Add uncasting animation or effects here
@@ -452,7 +470,6 @@ public class FishingController : MonoBehaviour, IItem
                 currentfish.transform.position = lure.transform.position;
                 currentfish.transform.parent = lure.transform;
                 currentfish.transform.localEulerAngles = new Vector3(-90, 0, 0);
-                currentfish.transform.localScale =  new Vector3(0.6f, 0.6f, 1.5f);
                 currentfish.SetFishShakingSpeed(3);
                 currentfish.GetComponent<Fish>().enabled = false;
                 hasFishHooked = true;

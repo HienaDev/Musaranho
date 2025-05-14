@@ -1,3 +1,4 @@
+using AndreStuff;
 using System.Collections;
 using System.IO;
 using UnityEngine;
@@ -26,11 +27,40 @@ public class Fish : MonoBehaviour
     private FishingController fishingController;  
     
     private Material fishMaterial;
+    
+    public FishData fishData;
+
 
     private void Awake()
     {
         // Get the material of the fish
         fishMaterial = GetComponentInChildren<Renderer>().material;
+    }
+
+    private IEnumerator Start()
+    {
+        yield return new WaitForSeconds(0.1f);
+
+        fishData = GetComponent<FishManager>().GetFishData();
+
+        switch (fishData.WeighType)
+        {
+            case FishWeight.LIGHT:
+                gameObject.transform.localScale *= 0.25f;
+                break;
+            case FishWeight.MEDIUM:
+                gameObject.transform.localScale *= 0.5f;
+
+                break;
+            case FishWeight.HEAVY:
+                gameObject.transform.localScale *= 1f;
+
+                break;
+            case FishWeight.GIANT:
+                gameObject.transform.localScale *= 2f;
+
+                break;
+        }
     }
 
     public void SetFishingState(bool state)
@@ -48,10 +78,6 @@ public class Fish : MonoBehaviour
         fishMaterial.SetFloat("_Strength", amount/10);
     }
 
-    private void Start()
-    {
-        
-    }
 
     public void SetLureTarget(Transform target, FishingController fishingController)
     {
