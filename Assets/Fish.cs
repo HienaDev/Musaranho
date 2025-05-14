@@ -1,8 +1,9 @@
+using System.Collections;
+using System.IO;
 using UnityEngine;
 
 public class Fish : MonoBehaviour
 {
-    [SerializeField] private Transform mouth;
     [SerializeField] private float minDistanceToLure = 0.1f;
     [SerializeField] private float speed = 2f;
     [SerializeField] private float maxTimeOnLure = 10f;
@@ -12,7 +13,7 @@ public class Fish : MonoBehaviour
     [SerializeField] private float diveSharpness = 2f; // How sharply they dive downward
 
 
-
+    private bool beingFished = false;
 
     private Transform lureTarget;
     private float timeOnLure = 0f;
@@ -20,8 +21,32 @@ public class Fish : MonoBehaviour
     private Vector3 giveUpDirection;
     private bool isActive = true;
     private bool ripplesActive = false;
+    private bool canGoOnLure = true;
 
-    private FishingController fishingController;    
+    private FishingController fishingController;  
+    
+    private Material fishMaterial;
+
+    private void Awake()
+    {
+        // Get the material of the fish
+        fishMaterial = GetComponentInChildren<Renderer>().material;
+    }
+
+    public void SetFishingState(bool state)
+    {
+        beingFished = state;
+        if (!state)
+        {
+            GiveUp();
+        }
+    }
+
+    public void SetFishShakingSpeed(float amount)
+    {
+        fishMaterial.SetFloat("_ShakingSpeed", amount);
+        fishMaterial.SetFloat("_Strength", amount/10);
+    }
 
     private void Start()
     {
@@ -36,6 +61,14 @@ public class Fish : MonoBehaviour
         isActive = true;
         ripplesActive = false;
         this.fishingController = fishingController;
+
+        
+
+        if (fishingController.isFishing)
+        {
+            canGoOnLure = false;
+            GiveUp(Random.Range(1f, 3f));
+        }
     }
 
     void Update()
@@ -65,15 +98,16 @@ public class Fish : MonoBehaviour
 
         if (lureTarget != null)
         {
-            float distance = Vector3.Distance(mouth.position, lureTarget.position);
-            if (distance <= minDistanceToLure && !ripplesActive)
+            float distance = Vector3.Distance(transform.position, lureTarget.position);
+            if (distance <= minDistanceToLure && !ripplesActive && canGoOnLure)
             {
                 ripplesActive = true;
                 //activate ripples
-                fishingController.TogglePullingLine(true);
+
+                fishingController.TogglePullingLine(true, this);
             }
 
-            Vector3 direction = (lureTarget.position - mouth.position).normalized;
+            Vector3 direction = (lureTarget.position - transform.position).normalized;
 
             if (distance > minDistanceToLure)
             {
@@ -85,17 +119,29 @@ public class Fish : MonoBehaviour
                 transform.position += transform.forward * speed * Time.deltaTime;
             }
 
-            if (ripplesActive)
+            if (ripplesActive && !beingFished)
             {
                 timeOnLure += Time.deltaTime;
 
                 if (timeOnLure >= maxTimeOnLure)
                 {
                     GiveUp();
-                    fishingController.TogglePullingLine(false);
+                    fishingController.TogglePullingLine(false, this);
                 }
             }
         }
+    }
+
+    private void GiveUp(float timeToGiveUp)
+    {
+        
+        StartCoroutine(GiveUpCoroutine(timeToGiveUp));
+    }
+
+    private IEnumerator GiveUpCoroutine(float timeToGiveUp)
+    {
+        yield return new WaitForSeconds(timeToGiveUp);
+        GiveUp();
     }
 
     private void GiveUp()

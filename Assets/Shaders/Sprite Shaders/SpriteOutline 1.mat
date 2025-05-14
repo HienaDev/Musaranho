@@ -42,8 +42,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _Distortion: 1
-    - _DistortionScale: 10.17
-    - _DistortionStrength: 0.03
+    - _DistortionScale: 2
+    - _DistortionStrength: 1
     - _Outline: 0
     - _OutlineSize: 0.03
     - _OutlineThickness: 0.02
