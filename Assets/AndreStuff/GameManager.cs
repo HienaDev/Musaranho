@@ -41,8 +41,6 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
 
         LoadJsonData();
-
-        SoundManager.Instance.PlaySound(SoundType.SOUND1);
     }
 
     private void LoadJsonData()
