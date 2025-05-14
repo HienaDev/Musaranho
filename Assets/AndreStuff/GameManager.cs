@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using AndreStuff;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -40,6 +41,8 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false;
 
         LoadJsonData();
+
+        SoundManager.Instance.PlaySound(SoundType.SOUND1);
     }
 
     private void LoadJsonData()
