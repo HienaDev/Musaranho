@@ -1,5 +1,6 @@
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FishingController : MonoBehaviour, IItem
 {
@@ -30,15 +31,22 @@ public class FishingController : MonoBehaviour, IItem
     [Header("Fishing Minigame")]
     [SerializeField] private GameObject UI;
     [SerializeField] private Transform bar;
+    [SerializeField] private Image hitMarker;
     [SerializeField] private Vector2 barHeighLimits = new Vector2(-230, 230);
     private float currentBarPosition;
-    private bool isFishing = true;
+    private bool isFishing = false;
 
     [SerializeField] private float barAcceleration = 400f; // Acceleration when space is pressed
     [SerializeField] private float barGravity = 200f; // Downward acceleration when space is released
     [SerializeField] private float directionChangeMultiplier = 2.0f; // Multiplier when changing direction
     private float barVelocity = 0f; // Current velocity of the bar
     private Vector3 barStartPosition; // Initial position of the bar
+
+    [SerializeField] private float timeNeededToReel = 4f;
+    private float currentTimeReeled = 0f;
+    private int numberOfReels = 2;
+
+    [SerializeField] private GameManager gameManager;
 
     // LeftClickItem method to start casting the fishing line
     public void LeftClickItem()
@@ -112,6 +120,7 @@ public class FishingController : MonoBehaviour, IItem
     public void TogglePullingLine(bool toggle)
     {
         particleSystemRipplesLure.SetActive(toggle);
+        fishBiting = toggle;
     }
 
     private void UncastLine()
@@ -207,7 +216,7 @@ public class FishingController : MonoBehaviour, IItem
         float accelerationToApply;
 
         // Check if spacebar is pressed
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetButton("Fire1"))
         {
             // If moving down but trying to go up, apply enhanced acceleration
             if (barVelocity < 0)
@@ -257,6 +266,19 @@ public class FishingController : MonoBehaviour, IItem
         // Update bar position
         bar.localPosition = newPosition;
         currentBarPosition = bar.localPosition.y;
+
+        
+
+        if(currentBarPosition < hitMarker.transform.localPosition.y + hitMarker.rectTransform.sizeDelta.y / 2 && 
+            currentBarPosition > hitMarker.transform.localPosition.y - hitMarker.rectTransform.sizeDelta.y / 2)
+        {
+            // Hit marker logic
+            hitMarker.color = Color.green; // Change color to red when hit
+        }
+        else
+        {
+            hitMarker.color = Color.red; // Reset color when not hit
+        }
 
         // Debug information
         Debug.Log($"Bar Velocity: {barVelocity}, Position: {currentBarPosition}");
