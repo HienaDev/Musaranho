@@ -1,6 +1,10 @@
+using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using System.Collections;
+using AndreStuff;
 
 public class FishingController : MonoBehaviour, IItem
 {
@@ -17,6 +21,7 @@ public class FishingController : MonoBehaviour, IItem
 
     [Header("Fishing Effects")]
     [SerializeField] private GameObject lure;
+    [SerializeField] private GameObject bait;
     [SerializeField] private Animator animator;
     [SerializeField] private GameObject throwableLure;
     [SerializeField] private Transform rodTip;
@@ -30,11 +35,16 @@ public class FishingController : MonoBehaviour, IItem
 
     [Header("Fishing Minigame")]
     [SerializeField] private GameObject UI;
-    [SerializeField] private Transform bar;
+    [SerializeField] private Image slider;
+    private float sliderDistortion = 0;
+    [SerializeField] private RectTransform bar;
+    private float barDistortion = 0.05f;
+    private float startingBarSize;
     [SerializeField] private Image hitMarker;
+    private float hitMarkerDistortion = 0.05f;
     [SerializeField] private Vector2 barHeighLimits = new Vector2(-230, 230);
     private float currentBarPosition;
-    private bool isFishing = false;
+    public bool isFishing = false;
 
     [SerializeField] private float barAcceleration = 400f; // Acceleration when space is pressed
     [SerializeField] private float barGravity = 200f; // Downward acceleration when space is released
@@ -42,16 +52,31 @@ public class FishingController : MonoBehaviour, IItem
     private float barVelocity = 0f; // Current velocity of the bar
     private Vector3 barStartPosition; // Initial position of the bar
 
-    [SerializeField] private float timeNeededToReel = 4f;
+    [SerializeField] private float timeNeededToReel = 3f;
+    [SerializeField] private float timeToLoseFish = 3f;
     private float currentTimeReeled = 0f;
+    private float currentTimeLost = 0f;
     private int numberOfReels = 2;
+    private int currentAmountOfReels = 0;
+    [SerializeField] private float bringFishUpRadius = 5f;
 
     [SerializeField] private GameManager gameManager;
+
+    private Fish currentfish;
+    private GameObject hookedFish;
+    private bool hasFishHooked = false;
+
+    private void Awake()
+    {
+        startingBarSize = bar.sizeDelta.x;
+    }
+
+
 
     // LeftClickItem method to start casting the fishing line
     public void LeftClickItem()
     {
-        if (!isCasting)
+        if (!isCasting && !isFishing)
         {
             if (isCast)
             {
@@ -69,10 +94,42 @@ public class FishingController : MonoBehaviour, IItem
         }
     }
 
+    private void ToggleFishingUI(bool toggle)
+    {
+
+
+        if(toggle)
+        {
+            UI.SetActive(toggle);
+            slider.material.DOFloat(sliderDistortion, "_DistortionStrength", 1);
+            bar.GetComponent<Image>().material.DOFloat(barDistortion, "_DistortionStrength", 1);
+            hitMarker.material.DOFloat(hitMarkerDistortion, "_DistortionStrength", 1);
+        }
+        else
+        {
+            slider.material.DOFloat(1f, "_DistortionStrength", 1);
+            bar.GetComponent<Image>().material.DOFloat(1f, "_DistortionStrength", 1);
+            hitMarker.material.DOFloat(1f, "_DistortionStrength", 1).OnComplete(() => UI.SetActive(toggle)) ;
+        }
+    }   
     private void StartFishingMinigame()
     {
+        StartCoroutine(StartFishingGameCR(1f));
+    }
+
+    private IEnumerator StartFishingGameCR(float time)
+    {
+        hitMarker.enabled = true;
+        ToggleFishingUI(true);
+        yield return new WaitForSeconds(time);
+        if (currentfish != null)
+        {
+            currentfish.SetFishingState(true);
+        }
+        hitMarker.transform.localPosition = new Vector3(hitMarker.transform.localPosition.x, Random.Range(barHeighLimits.x + hitMarker.rectTransform.sizeDelta.y / 2, barHeighLimits.y - hitMarker.rectTransform.sizeDelta.y / 2), hitMarker.transform.localPosition.z);
+
         isFishing = true;
-        UI.SetActive(true);
+        
         barVelocity = 0f;
         barStartPosition = bar.localPosition;
     }
@@ -96,11 +153,28 @@ public class FishingController : MonoBehaviour, IItem
     // RightClickItem method for any right-click action (not implemented)
     public void RightClickItem()
     {
-        if (isCast)
+        if(hasFishHooked)
+        {
+            if (currentfish != null)
+            {
+                currentfish.SetFishingState(false);
+            }
+            hasFishHooked = false;
+            bait.SetActive(true);
+            hookedFish.AddComponent<Rigidbody>();
+            hookedFish.AddComponent<EquipInteractable>();   
+            hookedFish.GetComponent<Collider>().isTrigger = false;
+            hookedFish.transform.parent = null;
+            hookedFish = null;
+        }
+        else if (isCast)
         {
             UncastLine();
         }
     }
+
+
+
     // RightHoldItem method for any right-hold action (not implemented)
     public void RightHoldItem() { }
     // RightReleaseItem method for any right-release action (not implemented)
@@ -117,9 +191,24 @@ public class FishingController : MonoBehaviour, IItem
         startedCharging = Time.time;
     }
 
-    public void TogglePullingLine(bool toggle)
+    public void TogglePullingLine(bool toggle, Fish fish)
     {
+        if (isFishing)
+        {
+            return;
+        }
+
         particleSystemRipplesLure.SetActive(toggle);
+        if (!toggle)
+        {
+            if (currentfish == fish)
+            {
+                currentfish = null;
+            }
+        }
+        else
+            currentfish = fish;
+
         fishBiting = toggle;
     }
 
@@ -137,7 +226,7 @@ public class FishingController : MonoBehaviour, IItem
 
         lure.SetActive(true);
         throwableLure.SetActive(false);
-        UI.SetActive(false);
+        ToggleFishingUI(false);
     }
 
     private void ReelInLine()
@@ -171,13 +260,13 @@ public class FishingController : MonoBehaviour, IItem
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
         if (UI != null)
         {
-            UI.SetActive(false);
+            ToggleFishingUI(false);
         }
 
-        if (isFishing)
-            UI.SetActive(true);
+
 
         if (bar != null)
         {
@@ -267,20 +356,118 @@ public class FishingController : MonoBehaviour, IItem
         bar.localPosition = newPosition;
         currentBarPosition = bar.localPosition.y;
 
-        
 
-        if(currentBarPosition < hitMarker.transform.localPosition.y + hitMarker.rectTransform.sizeDelta.y / 2 && 
+
+        if (currentBarPosition < hitMarker.transform.localPosition.y + hitMarker.rectTransform.sizeDelta.y / 2 &&
             currentBarPosition > hitMarker.transform.localPosition.y - hitMarker.rectTransform.sizeDelta.y / 2)
         {
             // Hit marker logic
             hitMarker.color = Color.green; // Change color to red when hit
+            currentTimeReeled += Time.deltaTime;
+
+
+            if(currentTimeLost > 0f)
+            {
+                currentTimeLost -= Time.deltaTime;
+            }
+
+            bar.sizeDelta = new Vector2(Mathf.Lerp(startingBarSize, 0f, currentTimeLost / timeToLoseFish), bar.sizeDelta.y);
+
+
+            if (currentTimeReeled > timeNeededToReel)
+            {
+                currentTimeLost = 0f;
+                currentAmountOfReels++;
+                currentTimeReeled = 0f;
+                ReelInFish();
+                if (currentAmountOfReels >= numberOfReels)
+                {
+                    Debug.Log("Fish caught!");
+                    hitMarker.enabled = false;
+                }
+                else
+                    hitMarker.transform.localPosition = new Vector3(hitMarker.transform.localPosition.x, Random.Range(barHeighLimits.x + hitMarker.rectTransform.sizeDelta.y / 2, barHeighLimits.y - hitMarker.rectTransform.sizeDelta.y / 2), hitMarker.transform.localPosition.z);
+
+                
+            }
         }
         else
         {
             hitMarker.color = Color.red; // Reset color when not hit
+            currentTimeLost += Time.deltaTime;
+
+            bar.sizeDelta = new Vector2(Mathf.Lerp(startingBarSize, 0f, currentTimeLost / timeToLoseFish),bar.sizeDelta.y);
+
+            if (currentTimeLost > timeToLoseFish)
+            {
+                currentTimeLost = 0f;
+                currentfish.SetFishingState(false);
+            }
         }
 
         // Debug information
         Debug.Log($"Bar Velocity: {barVelocity}, Position: {currentBarPosition}");
+    }
+
+    private void ReelInFish()
+    {
+        if (throwableLure == null)
+            return;
+
+        // Get the lure position
+        Vector3 lurePosition = throwableLure.transform.position;
+
+        // Get the player position
+        Vector3 playerPosition = player.position;
+
+        // Use the same Y position as the lure for the calculation to make it a circle instead of a sphere
+        Vector3 playerPositionSameY = new Vector3(playerPosition.x, lurePosition.y, playerPosition.z);
+
+        // Get direction from player to lure (in the XZ plane only)
+        Vector3 direction = lurePosition - playerPositionSameY;
+
+        // If the lure is already within the radius, no need to reel
+        float currentDistance = direction.magnitude;
+        if (currentDistance <= bringFishUpRadius)
+            return;
+
+        // Normalize the direction and multiply by radius to find the point on the circle
+        Vector3 pointOnCircle = playerPositionSameY + direction.normalized * bringFishUpRadius;
+
+        // Calculate total distance from lure to the point on circle
+        float totalDistance = Vector3.Distance(lurePosition, pointOnCircle);
+
+        // Calculate how much we should move toward the circle based on current reel progress
+        float progressPerReel = 1.0f / numberOfReels;
+        float currentProgress = progressPerReel * currentAmountOfReels;
+
+        // Calculate the target position for this reel
+        Vector3 targetPosition = Vector3.Lerp(lurePosition, pointOnCircle, currentProgress);
+
+        // Use DOTween to animate the movement
+        throwableLure.transform.DOMove(targetPosition, 1.0f).SetEase(Ease.OutQuad).OnComplete(() =>
+        {
+            if (currentAmountOfReels >= numberOfReels)
+            {
+                currentfish.transform.position = lure.transform.position;
+                currentfish.transform.parent = lure.transform;
+                currentfish.transform.localEulerAngles = new Vector3(-90, 0, 0);
+                currentfish.transform.localScale =  new Vector3(0.6f, 0.6f, 1.5f);
+                currentfish.SetFishShakingSpeed(3);
+                currentfish.GetComponent<Fish>().enabled = false;
+                hasFishHooked = true;
+                hookedFish = currentfish.gameObject;
+                bait.SetActive(false);
+                UncastLine();
+            }
+        });
+
+        Debug.Log($"Reeling fish: {currentAmountOfReels}/{numberOfReels}, Distance: {currentDistance} -> {Vector3.Distance(targetPosition, playerPositionSameY)}");
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(player.position, bringFishUpRadius);
     }
 }
