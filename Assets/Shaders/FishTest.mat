@@ -45,7 +45,7 @@ Material:
     - _DistortionIntensity: 1
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _ShakeSpeed: 10
+    - _ShakeSpeed: 2
     - _Strength: 0.1
     m_Colors: []
   m_BuildTextureStacks: []
