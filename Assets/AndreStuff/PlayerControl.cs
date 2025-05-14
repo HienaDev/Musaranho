@@ -26,15 +26,33 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q) && HasObjectInHand())
         {
             Vector3 throwDirection = _cam.transform.forward;
+            Debug.DrawRay(_cam.transform.position, throwDirection * 10f, Color.yellow, 0.5f);
             DropObject(throwDirection * throwForce);
         }
         
         // E = interact
         if (Input.GetKeyDown(KeyCode.E))
         {
+            
+            // Recommended 'RaycastNonAlloc' but it has a limit depending on the set array size,
+            // and I'm not sure how much objects may end up being raycasted.
+            RaycastHit[] hits = Physics.RaycastAll(_cam.transform.position, _cam.transform.forward, 100.0F);
+            for (int i = 0; i < hits.Length; i++)
+            {
+                RaycastHit hit = hits[i];
+                if (hit.transform.gameObject == gameObject || !hit.transform.CompareTag("Interactable")) continue;
+                Debug.DrawRay(_cam.transform.position, _cam.transform.forward * hit.distance, Color.yellow, 0.5f);
+                InteractedWithInteractable(hit.transform.gameObject);
+                break;
+            }
+            
+            
+            // Changing to raycastAll to fix player in front
+            /*
             RaycastHit hit;
-            if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, Mathf.Infinity))
+            if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit, Mathf.Infinity, ~layerToIgnoreRays))
             { 
+                Debug.Log("hit object: " + hit.transform.name);
                 Debug.DrawRay(_cam.transform.position, _cam.transform.forward * hit.distance, Color.yellow, 0.1f);
                 if (hit.transform.CompareTag("Interactable"))
                 {
@@ -42,6 +60,7 @@ public class PlayerControl : MonoBehaviour
                     InteractedWithInteractable(hit.transform.gameObject);
                 }
             }
+            */
         }
     }
     
@@ -76,7 +95,7 @@ public class PlayerControl : MonoBehaviour
         if (!HasObjectInHand()) return;
         Transform heldObject = transform.Find("Hand").GetChild(0);
         heldObject.SetParent(null);
-        heldObject.position += new Vector3(0f, 0.5f, 0f);
+        //heldObject.position += new Vector3(0f, 0.5f, 0f);
         if (heldObject.TryGetComponent(out EquipInteractable equipInteractable)) equipInteractable.Unequipped();
         
         Rigidbody rb = heldObject.GetComponent<Rigidbody>();
