@@ -10,17 +10,17 @@ namespace AndreStuff
         [SerializeField] private string hoveredText = "Press <b>E</b> to equip!";
         private bool _hovered = false;
         private Rigidbody _rb;
-        private BoxCollider _boxCollider;
+        private Collider _boxCollider;
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
-            _boxCollider = GetComponent<BoxCollider>();
+            _boxCollider = GetComponent<Collider>();
         }
 
         private void Start()
         {
-            transform.Find("ObjectCanvas").Find("Text").GetComponent<TMP_Text>().text = hoveredText;
-            UpdateState();
+            //transform.Find("ObjectCanvas").Find("Text").GetComponent<TMP_Text>().text = hoveredText;
+            //UpdateState();
         }
 
         private void OnMouseEnter()
@@ -38,7 +38,7 @@ namespace AndreStuff
 
         private void UpdateState()
         {
-            transform.Find("ObjectCanvas").gameObject.SetActive(_hovered);
+            //transform.Find("ObjectCanvas").gameObject.SetActive(_hovered);
         }
 
         public void Equipped()

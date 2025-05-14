@@ -70,7 +70,6 @@ public class FishSpawner : MonoBehaviour
 
     public void ToggleFishSpawn(bool canSpawn)
     {
-        justSpawnedFish = Time.time;
         canSpawnFish = canSpawn;
     }
 }

@@ -6,6 +6,9 @@ public class PlayerControl : MonoBehaviour
 
     [SerializeField] private float throwForce = 10f;
     [SerializeField] private GameManager gameManager;
+
+    [SerializeField] private Transform hand;
+    [SerializeField] private FishingController fishingController;
     public GameManager GetGameManager() => gameManager;
 
     private PlayerMovement _playerMovement;
@@ -66,7 +69,7 @@ public class PlayerControl : MonoBehaviour
     
     private bool HasObjectInHand()
     {
-        return transform.Find("Hand").childCount > 0;
+        return hand.childCount > 0;
     }
 
     private void InteractedWithInteractable(GameObject objectInteractable)
@@ -79,9 +82,15 @@ public class PlayerControl : MonoBehaviour
 
         if (objectInteractable.TryGetComponent(out EquipInteractable equipInteractable))
         {
+            if(objectInteractable.TryGetComponent(out Fish fishScript) && !fishingController.RodBusy)
+            {
+                fishScript.RotateFish(true);
+            }
+            fishingController.ToggleFishingRod(false);
             equipInteractable.Equipped();
-            equipInteractable.transform.parent = transform.Find("Hand");
+            equipInteractable.transform.parent = hand;
             equipInteractable.transform.localPosition = Vector3.zero;
+            equipInteractable.transform.localEulerAngles = Vector3.zero;
         }
     }
 
@@ -93,7 +102,7 @@ public class PlayerControl : MonoBehaviour
     private void DropObject(Vector3 force)
     {
         if (!HasObjectInHand()) return;
-        Transform heldObject = transform.Find("Hand").GetChild(0);
+        Transform heldObject = hand.GetChild(0);
         heldObject.SetParent(null);
         //heldObject.position += new Vector3(0f, 0.5f, 0f);
         if (heldObject.TryGetComponent(out EquipInteractable equipInteractable)) equipInteractable.Unequipped();

@@ -30,6 +30,7 @@ public class Fish : MonoBehaviour
     
     public FishData fishData;
 
+    [SerializeField] private Transform fishRotationPivot;
 
     private void Awake()
     {
@@ -37,6 +38,10 @@ public class Fish : MonoBehaviour
         fishMaterial = GetComponentInChildren<Renderer>().material;
     }
 
+    public void RotateFish(bool reverse)
+    {
+        fishRotationPivot.eulerAngles = new Vector3(0, reverse ? 180 : 0, 0);
+    }
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(0.1f);
