@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FishingController : MonoBehaviour, IItem
@@ -26,6 +27,19 @@ public class FishingController : MonoBehaviour, IItem
     [SerializeField] private FishSpawner fishManager;
     private bool fishBiting = false;
 
+    [Header("Fishing Minigame")]
+    [SerializeField] private GameObject UI;
+    [SerializeField] private Transform bar;
+    [SerializeField] private Vector2 barHeighLimits = new Vector2(-230, 230);
+    private float currentBarPosition;
+    private bool isFishing = true;
+
+    [SerializeField] private float barAcceleration = 400f; // Acceleration when space is pressed
+    [SerializeField] private float barGravity = 200f; // Downward acceleration when space is released
+    [SerializeField] private float directionChangeMultiplier = 2.0f; // Multiplier when changing direction
+    private float barVelocity = 0f; // Current velocity of the bar
+    private Vector3 barStartPosition; // Initial position of the bar
+
     // LeftClickItem method to start casting the fishing line
     public void LeftClickItem()
     {
@@ -33,9 +47,9 @@ public class FishingController : MonoBehaviour, IItem
         {
             if (isCast)
             {
-                if(fishBiting)
+                if (fishBiting)
                 {
-
+                    StartFishingMinigame();
                 }
                 else
                     UncastLine();
@@ -46,6 +60,15 @@ public class FishingController : MonoBehaviour, IItem
             }
         }
     }
+
+    private void StartFishingMinigame()
+    {
+        isFishing = true;
+        UI.SetActive(true);
+        barVelocity = 0f;
+        barStartPosition = bar.localPosition;
+    }
+
     // LeftHoldItem method to hold the fishing line
     public void LeftHoldItem()
     {
@@ -63,9 +86,9 @@ public class FishingController : MonoBehaviour, IItem
         }
     }
     // RightClickItem method for any right-click action (not implemented)
-    public void RightClickItem() 
-    { 
-        if(isCast)
+    public void RightClickItem()
+    {
+        if (isCast)
         {
             UncastLine();
         }
@@ -76,7 +99,7 @@ public class FishingController : MonoBehaviour, IItem
     public void RightReleaseItem() { }
     private void CastLine()
     {
-        
+
         isCasting = true;
         // Logic to cast the fishing line
         Debug.Log("Casting line...");
@@ -90,13 +113,13 @@ public class FishingController : MonoBehaviour, IItem
     {
         particleSystemRipplesLure.SetActive(toggle);
     }
- 
 
     private void UncastLine()
     {
         isCasting = false;
         isReeling = false;
         isCast = false;
+        isFishing = false;
         // Logic to uncast the fishing line
         Debug.Log("Uncasting line...");
         // Add uncasting animation or effects here
@@ -105,7 +128,9 @@ public class FishingController : MonoBehaviour, IItem
 
         lure.SetActive(true);
         throwableLure.SetActive(false);
+        UI.SetActive(false);
     }
+
     private void ReelInLine()
     {
         isReeling = true;
@@ -113,6 +138,7 @@ public class FishingController : MonoBehaviour, IItem
         Debug.Log("Reeling in...");
         // Add reeling animation or effects here
     }
+
     private void ReleaseLine()
     {
         isCasting = false;
@@ -136,13 +162,24 @@ public class FishingController : MonoBehaviour, IItem
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (UI != null)
+        {
+            UI.SetActive(false);
+        }
+
+        if (isFishing)
+            UI.SetActive(true);
+
+        if (bar != null)
+        {
+            barStartPosition = bar.localPosition;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             LeftClickItem();
         }
@@ -158,5 +195,70 @@ public class FishingController : MonoBehaviour, IItem
         {
             RightReleaseItem();
         }
+
+        if (isFishing)
+        {
+            UpdateFishingBar();
+        }
+    }
+
+    private void UpdateFishingBar()
+    {
+        float accelerationToApply;
+
+        // Check if spacebar is pressed
+        if (Input.GetKey(KeyCode.Space))
+        {
+            // If moving down but trying to go up, apply enhanced acceleration
+            if (barVelocity < 0)
+            {
+                accelerationToApply = barAcceleration * directionChangeMultiplier;
+            }
+            else
+            {
+                accelerationToApply = barAcceleration;
+            }
+
+            // Apply upward acceleration
+            barVelocity += accelerationToApply * Time.deltaTime;
+        }
+        else
+        {
+            // If moving up but now falling, apply enhanced gravity
+            if (barVelocity > 0)
+            {
+                accelerationToApply = barGravity * directionChangeMultiplier;
+            }
+            else
+            {
+                accelerationToApply = barGravity;
+            }
+
+            // Apply downward acceleration (gravity)
+            barVelocity -= accelerationToApply * Time.deltaTime;
+        }
+
+        // Move the bar
+        Vector3 newPosition = bar.localPosition;
+        newPosition.y += barVelocity * Time.deltaTime;
+
+        // Clamp position within limits
+        if (newPosition.y <= barHeighLimits.x)
+        {
+            newPosition.y = barHeighLimits.x;
+            barVelocity = 0; // Stop at bottom limit
+        }
+        else if (newPosition.y >= barHeighLimits.y)
+        {
+            newPosition.y = barHeighLimits.y;
+            barVelocity = 0; // Stop at top limit
+        }
+
+        // Update bar position
+        bar.localPosition = newPosition;
+        currentBarPosition = bar.localPosition.y;
+
+        // Debug information
+        Debug.Log($"Bar Velocity: {barVelocity}, Position: {currentBarPosition}");
     }
 }

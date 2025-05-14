@@ -5747,8 +5747,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 95}
-  m_SizeDelta: {x: 116, y: 16}
+  m_AnchoredPosition: {x: 0, y: 136}
+  m_SizeDelta: {x: 100, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &323344761
 MonoBehaviour:
@@ -5762,7 +5762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 2100000, guid: 30f83a07b59c6ef44b542e5dc3733ff9, type: 2}
   m_Color: {r: 0, g: 0.88171387, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
@@ -6971,7 +6971,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 1407243822}
-  m_PlaneDistance: 0.1
+  m_PlaneDistance: 0.2
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -8117,6 +8117,63 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463443788}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &1552834377
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3.309
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.302
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.769
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5805326282364574882, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8543001979643177888, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
+      propertyPath: m_Name
+      value: Fish
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1f479e7aac20cd64d8dea3c38b7e3879, type: 3}
 --- !u!1 &1566965645
 GameObject:
   m_ObjectHideFlags: 0
@@ -9070,7 +9127,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618393115}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9b46f27ab33e6c34a911f2f27b17bdb1, type: 3}
   m_Name: 
@@ -9086,6 +9143,11 @@ MonoBehaviour:
   rodTip: {fileID: 463044969}
   particleSystemRipplesLure: {fileID: 43482743}
   fishManager: {fileID: 755060287}
+  UI: {fileID: 923349351}
+  bar: {fileID: 323344760}
+  barHeighLimits: {x: -230, y: 230}
+  barAcceleration: 400
+  barGravity: 200
 --- !u!1 &1649322804
 GameObject:
   m_ObjectHideFlags: 0
@@ -9420,8 +9482,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 2100000, guid: 5b40e96f6766f44499bcf6280609e1e7, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.72156864}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -10612,3 +10674,4 @@ SceneRoots:
   - {fileID: 1606512650}
   - {fileID: 1665412700}
   - {fileID: 1603673606}
+  - {fileID: 1552834377}
