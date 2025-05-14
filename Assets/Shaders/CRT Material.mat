@@ -39,7 +39,8 @@ Material:
     m_Floats:
     - _BlueOffset: 0.002
     - _Pixelation: 220
-    - _ScanlineSpeed: 0.25
+    - _ScanlineNumber: 700
+    - _ScanlineSpeed: -0.003
     m_Colors:
     - _Color: {r: 1.2745606, g: 1.2745606, b: 1.2745606, a: 0}
   m_BuildTextureStacks: []
