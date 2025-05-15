@@ -21,6 +21,7 @@ namespace AndreStuff
         private GameManager _gameManager;
 
         [SerializeField] private UnityEvent defaultEvent;
+        [SerializeField] private UnityEvent eventAtPointerAnimationEnd;
         [SerializeField] private UnityEvent altarEventGood;
         [SerializeField] private UnityEvent altarEventBad;
         [SerializeField] private UnityEvent altarEventDefault;
@@ -75,8 +76,13 @@ namespace AndreStuff
             if (!isAltar)
             {
                 float targetZ = Mathf.Lerp(pointerAngles.x, pointerAngles.y, currentWeight / _gameManager.GetDailyWeightNeeded());
+                Debug.Log("currentWeight: " + currentWeight + " targetWEight: " + _gameManager.GetDailyWeightNeeded());
                 Vector3 targetRotation = new Vector3(0, 0, targetZ);
-                pointer.transform.DOLocalRotate(targetRotation, 2f).SetEase(Ease.OutSine);
+
+                pointer.transform.DOLocalRotate(targetRotation, 2f).SetEase(Ease.InOutElastic).OnComplete(() =>
+                {
+                    eventAtPointerAnimationEnd.Invoke();
+                }) ;
             }
 
             if (isAltar && currentWeight >= _gameManager.GetDailyWeightNeeded())
