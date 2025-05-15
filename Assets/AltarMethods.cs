@@ -21,5 +21,6 @@ public class AltarMethods : MonoBehaviour
     public void PlayBell()
     {
         SoundManager.Instance.PlayClipAtTransform(bellSound, bellPosition);
+        Debug.Log("Bell sound played");
     }
 }
