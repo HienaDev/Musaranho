@@ -224,7 +224,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -324,7 +324,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: e32b939a9301a464a860986f20c19974, type: 3}
   minPitch: 0.8
   maxPitch: 1.2
-  cooldownTime: 0.2
+  cooldownTime: 0.4
 --- !u!65 &327359257415176682
 BoxCollider:
   m_ObjectHideFlags: 0
