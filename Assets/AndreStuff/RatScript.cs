@@ -6,6 +6,8 @@ public class RatScript : MonoBehaviour
 
     [SerializeField] private float waitTimeForRun = 0.5f;
     [SerializeField] private float moveSpeed = 1f;
+    [SerializeField] private float timeBeforeStartDisappearing = 0.5f;
+    [SerializeField] private float timeToDisappear = 1f;
     
     private Renderer _renderer;
     private Camera _cam;
@@ -42,14 +44,16 @@ public class RatScript : MonoBehaviour
         yield return new WaitForSeconds(waitTimeForRun);
         _animator.SetBool("seen", true);
         _shouldRun = true;
+        yield return new WaitForSeconds(timeBeforeStartDisappearing);
         Color color = _renderer.material.color;
         while (true)
         {
-            color.a -= 1f * Time.deltaTime;
+            color.a -= (1f / timeToDisappear) * Time.deltaTime;
             _renderer.material.color = color;
             if (color.a < 0f) break;
             yield return null;
         }
+        Destroy(gameObject);
     }
     
     

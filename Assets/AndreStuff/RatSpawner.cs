@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Random = UnityEngine.Random;
+
+namespace AndreStuff
+{
+    public class RatSpawner : MonoBehaviour
+    {
+
+        [Header("Time between spawns")]
+        [SerializeField] private float minTime = 10f;
+        [SerializeField] private float extraRandomTime = 10f;
+        [Space(10)] [Header("Rat")]
+        [SerializeField] private GameObject ratPrefab;
+        [Space(10)] [Header("SpawnPositions")]
+        [SerializeField] private Transform[] spawnPoints;
+        
+        private float _timeForNextSpawn = -1f;
+        private GameObject _spawnedRat;
+
+        private void Start()
+        {
+            _timeForNextSpawn = Random.Range(minTime, (minTime + extraRandomTime));
+        }
+
+        private float _elapsed = 0f;
+        private void Update()
+        {
+            Debug.Log($"{_elapsed} / {_timeForNextSpawn}");
+            if (Mathf.Abs(_timeForNextSpawn) <= -1f || _spawnedRat != null) return;
+            _elapsed += Time.deltaTime;
+            if (_elapsed >= _timeForNextSpawn) SpawnRat();
+        }
+
+        private void SpawnRat()
+        {
+            Transform randomTrans = spawnPoints[Random.Range(0, spawnPoints.Length)];
+            _spawnedRat = Instantiate(ratPrefab, randomTrans.position, randomTrans.rotation);
+            _elapsed = 0f;
+            _timeForNextSpawn = Random.Range(minTime, (minTime + extraRandomTime));
+        }
+        
+    }
+}
