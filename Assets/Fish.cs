@@ -58,11 +58,11 @@ public class Fish : MonoBehaviour
 
                 break;
             case FishWeight.HEAVY:
-                gameObject.transform.localScale *= 1f;
+                gameObject.transform.localScale *= 0.8f;
 
                 break;
             case FishWeight.GIANT:
-                gameObject.transform.localScale *= 1.5f;
+                gameObject.transform.localScale *= 1.2f;
 
                 break;
         }
