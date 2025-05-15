@@ -1,6 +1,8 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using DG.Tweening;
+
 
 namespace AndreStuff
 {
@@ -48,7 +50,14 @@ namespace AndreStuff
             }
             UpdateMeasureCanvas(totalWeight);
             currentWeight = totalWeight;
-            pointer.transform.localEulerAngles = Mathf.Lerp(pointerAngles.x, pointerAngles.y, currentWeight / initialWeightQuota) * Vector3.forward;
+
+            // Assuming pointer is a Transform and pointerAngles is a Vector2 (start to end angles in degrees)
+            float targetZ = Mathf.Lerp(pointerAngles.x, pointerAngles.y, currentWeight / initialWeightQuota);
+            Vector3 targetRotation = new Vector3(0, 0, targetZ);
+
+            // Animate local rotation over 0.5 seconds (adjust duration as needed)
+            pointer.transform.DOLocalRotate(targetRotation, 2f).SetEase(Ease.OutSine);
+
             return false;
         }
 

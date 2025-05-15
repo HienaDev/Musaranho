@@ -79,7 +79,7 @@ Material:
     - _ZWrite: 0
     - _ZWriteControl: 0
     m_Colors:
-    - _Color: {r: 0.5299323, g: 0.75373256, b: 0.9924528, a: 0}
+    - _Color: {r: 0.116855934, g: 0.4037736, b: 0.05104307, a: 0}
     - _RippleColor: {r: 0.4867924, g: 0.4867924, b: 0.4867924, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
