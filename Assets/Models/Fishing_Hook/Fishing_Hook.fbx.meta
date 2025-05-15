@@ -1,19 +1,9 @@
 fileFormatVersion: 2
-guid: ce0a0680feb7c4e4593ac8e8e17620c0
+guid: 50d82b2ccd8c98b4ba79fed26efe369c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: DIRT_WALK
-    second: {fileID: 2100000, guid: fc1ecd9b598d0db4da40120eebf57de4, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: GRASS-WALK
-    second: {fileID: 2100000, guid: eef068126b9fedc4b9cacc4c1aa28d65, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
