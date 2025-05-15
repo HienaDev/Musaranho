@@ -102,6 +102,11 @@ public class PlayerControl : MonoBehaviour
             {
                 fishScript.RotateFish(true);
             }
+            
+            if (equipInteractable.TryGetComponent(out FishManager fishManager) && equipInteractable.TryGetComponent(out BucketChecker bucketChecker))
+            {
+                bucketChecker.enabled = false;
+            }
         }
     }
 
@@ -120,6 +125,14 @@ public class PlayerControl : MonoBehaviour
         
         Rigidbody rb = heldObject.GetComponent<Rigidbody>();
         rb.AddForce(force, ForceMode.Impulse);
-        
+        if (heldObject.TryGetComponent(out FishManager fishManager))
+        {
+            if (heldObject.TryGetComponent(out BucketChecker bucketChecker))
+            {
+                bucketChecker.enabled = true;
+                return;
+            }
+            heldObject.gameObject.AddComponent<BucketChecker>();
+        }
     }
 }
