@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace AndreStuff
@@ -8,6 +6,12 @@ namespace AndreStuff
     public class RatSpawner : MonoBehaviour
     {
 
+        /*
+         * ADD LATER:
+         * - Make sure it spawns close to player and not in a random far away position.
+         */
+        
+        
         [Header("Time between spawns")]
         [SerializeField] private float minTime = 10f;
         [SerializeField] private float extraRandomTime = 10f;

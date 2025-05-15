@@ -2559,7 +2559,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   soundMappings:
   - soundType: 0
-    audioClip: {fileID: 8300000, guid: 197e3b6dcef77704cbcd96be8ec3264a, type: 3}
+    audioClip: {fileID: 8300000, guid: 7de22578b16a1794f90f3346ae115c6d, type: 3}
+  - soundType: 1
+    audioClip: {fileID: 8300000, guid: e8dbb0a5e2e686140bf82f6e55732f34, type: 3}
 --- !u!114 &802344290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2572,8 +2574,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61edde91d3e1425786fa8ff49589c4b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minTime: 10
-  extraRandomTime: 10
+  minTime: 1
+  extraRandomTime: 1
   ratPrefab: {fileID: 4071429047932005545, guid: dab422ea20576274fb9c871af8bde3f2, type: 3}
   spawnPoints:
   - {fileID: 1157398095}

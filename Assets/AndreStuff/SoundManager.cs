@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using AndreStuff;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SoundManager : MonoBehaviour
 {
@@ -35,13 +36,14 @@ public class SoundManager : MonoBehaviour
         }
     }
     
-    public bool PlaySound(SoundType soundType, Vector3? position = null)
+    public bool PlaySound(SoundType soundType, Vector3? position = null, float minPitch = 1f, float maxPitch = 1f)
     {
         Debug.Log("Trying to play sound: " + soundType);
         if (_sounds.TryGetValue(soundType, out AudioClip clip))
         {
             // change volume later for which kind of sound it is and the volume value in settings.
             float volume = 1f;
+            _audioSource.pitch = Random.Range(minPitch, maxPitch);
             if (position == null)
             {
                 Debug.Log("position null, playing on manager pos");
