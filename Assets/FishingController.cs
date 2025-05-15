@@ -22,6 +22,8 @@ public class FishingController : MonoBehaviour, IItem
     public bool RodBusy => isCasting || isReeling || isCast || isFishing || hasFishHooked;
     public bool hasRodEquipped = true;
 
+    private FishHolder fishHolder;
+
     [Header("Fishing Effects")]
     [SerializeField] private GameObject lure;
     [SerializeField] private GameObject bait;
@@ -77,6 +79,8 @@ public class FishingController : MonoBehaviour, IItem
         startingBarSize = bar.sizeDelta.x;
     }
 
+       
+
     public void ToggleFishingRod(bool toggle)
     {
         hasRodEquipped = toggle;
@@ -106,7 +110,7 @@ public class FishingController : MonoBehaviour, IItem
                 hookedFish.AddComponent<Rigidbody>();
                 hookedFish.AddComponent<EquipInteractable>();
                 hookedFish.GetComponent<Collider>().isTrigger = false;
-                hookedFish.transform.parent = null;
+                hookedFish.transform.parent = fishHolder.transform;
                 hookedFish = null;
             }
 
@@ -247,7 +251,7 @@ public class FishingController : MonoBehaviour, IItem
             hookedFish.AddComponent<Rigidbody>();
             hookedFish.AddComponent<EquipInteractable>();
             hookedFish.GetComponent<Collider>().isTrigger = false;
-            hookedFish.transform.parent = null;
+            hookedFish.transform.parent = fishHolder.transform;
             hookedFish = null;
         }
         else if (isCast)
@@ -383,7 +387,7 @@ public class FishingController : MonoBehaviour, IItem
             ToggleFishingUI(false);
         }
 
-
+        fishHolder = FindAnyObjectByType<FishHolder>();
 
 
         if (bar != null)
