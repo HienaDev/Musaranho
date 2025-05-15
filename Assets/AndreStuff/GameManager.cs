@@ -22,6 +22,8 @@ public class GameManager : MonoBehaviour
     private float _crosshairSize = 10f;
     public float GetCrosshairSize() => _crosshairSize;
 
+    private DayNightCycle _dayNightCycle;
+
     private float[] _dailyWeightNeeded;
     /// <summary>
     /// Return value of weight needed for a day.
@@ -30,11 +32,18 @@ public class GameManager : MonoBehaviour
     /// <returns></returns>
     public float GetDailyWeightNeeded(int day = 0)
     {
+        if(_dayNightCycle != null)
+            day = _dayNightCycle.currentDay;
+
+        if (_dailyWeightNeeded == null)
+            return 30;
+
         return _dailyWeightNeeded[day];
     }
     
     private void Start()
     {
+        _dayNightCycle = FindAnyObjectByType<DayNightCycle>();
         _canPlayerMove = true;
         canvasMenu.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;

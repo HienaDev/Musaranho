@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System.Threading.Tasks;
+using UnityEngine.Events;
 
 public class DayNightCycle : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Transform sun; // Rotates from 50 to 250 degrees
 
     [SerializeField] private Transform boat;
-    private bool dayStarted = false;
+    public bool dayStarted = false;
     [SerializeField] private Transform boatDayPosition;
     private Vector3 boatStartPosition;
 
@@ -21,6 +22,11 @@ public class DayNightCycle : MonoBehaviour
 
     [SerializeField] private Transform player;
     [SerializeField] private Transform playerStartPosition;
+
+    public int currentDay = 0;
+    private GameManager gameManager;
+
+
 
     // Custom curve for slow start then faster motion
     private AnimationCurve slowStartCurve = new AnimationCurve(
@@ -33,6 +39,7 @@ public class DayNightCycle : MonoBehaviour
 
     void Start()
     {
+        gameManager = FindAnyObjectByType<GameManager>();
         boatStartPosition = boat.position;
 
         if (transitionScreen != null)
@@ -47,6 +54,8 @@ public class DayNightCycle : MonoBehaviour
     {
         if (dayStarted)
             currentTime += Time.deltaTime * daySpeed;
+        else
+            return;
 
         sun.transform.localEulerAngles = new Vector3(
             Mathf.Lerp(50, 250, currentTime / dayDuration),
@@ -77,10 +86,11 @@ public class DayNightCycle : MonoBehaviour
 
     public async void StartDay()
     {
+        currentDay++;
         await ToggleTransition(true).AsyncWaitForCompletion();
 
         dayStarted = true;
-        sun.transform.localEulerAngles = new Vector3(250, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
+
         boat.transform.position = boatDayPosition.position;
         player.position = playerStartPosition.position;
 
@@ -92,6 +102,7 @@ public class DayNightCycle : MonoBehaviour
         await ToggleTransition(true).AsyncWaitForCompletion();
 
         dayStarted = false;
+        sun.transform.localEulerAngles = new Vector3(250, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
         boat.transform.position = boatStartPosition;
         player.position = playerStartPosition.position;
 

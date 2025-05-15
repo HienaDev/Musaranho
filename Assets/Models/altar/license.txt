@@ -1,0 +1,11 @@
+Model Information:
+* title:	Altar
+* source:	https://sketchfab.com/3d-models/altar-69cc88bba49649aa980dcc9231934d6d
+* author:	igi (https://sketchfab.com/igor.cvitko)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Altar" (https://sketchfab.com/3d-models/altar-69cc88bba49649aa980dcc9231934d6d) by igi (https://sketchfab.com/igor.cvitko) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

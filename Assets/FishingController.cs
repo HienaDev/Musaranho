@@ -17,7 +17,7 @@ public class FishingController : MonoBehaviour, IItem
     public float castDistance = 10f;
     public float reelSpeed = 5f;
     private bool isCasting = false;
-    private bool isCast = false;
+    public bool isCast = false;
     private bool isReeling = false;
     public bool RodBusy => isCasting || isReeling || isCast || isFishing || hasFishHooked;
     public bool hasRodEquipped = true;

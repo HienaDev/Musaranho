@@ -72,6 +72,12 @@ public class Fish : MonoBehaviour
     {
         beingFished = state;
         
+        if(state)
+        {
+            hasGivenUp = false;
+            ripplesActive = true;
+        }
+
         if (!state)
         {
             canGoOnLure = false ;
@@ -102,6 +108,11 @@ public class Fish : MonoBehaviour
             canGoOnLure = false;
             GiveUp(Random.Range(1f, 3f));
         }
+    }
+
+    public void IsBeingFished()
+    {
+
     }
 
     void Update()
@@ -184,6 +195,9 @@ public class Fish : MonoBehaviour
 
     private void GiveUp()
     {
+        if (beingFished)
+            return;
+
         hasGivenUp = true;
         timeOnLure = 0f;
 

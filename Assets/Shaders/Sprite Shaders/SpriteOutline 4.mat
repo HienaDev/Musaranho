@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SpriteOutline 3
+  m_Name: SpriteOutline 4
   m_Shader: {fileID: -6465566751694194690, guid: e0ac6006cd3ce7042ab1b23ddc6a9b27, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -43,16 +43,16 @@ Material:
     m_Floats:
     - _Distortion: 1
     - _DistortionScale: 10
-    - _DistortionStrength: 25
-    - _Outline: 1
+    - _DistortionStrength: 0.6
+    - _Outline: 0
     - _OutlineSize: 0.03
-    - _OutlineThickness: 0.02
+    - _OutlineThickness: 0.29
     - _PixelResolution: 150
     - _Pixelation: 1
     - _Use8Directions: 1
     m_Colors:
     - _Direction: {r: 0, g: 0, b: 0, a: 0}
-    - _DistortionScrollDir: {r: -0.2, g: 0.2, b: 0, a: 0}
+    - _DistortionScrollDir: {r: -0.01, g: 0.03, b: 0, a: 0}
     - _OutlineColor: {r: 1, g: 0, b: 0.030466557, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

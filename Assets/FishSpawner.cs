@@ -20,6 +20,8 @@ public class FishSpawner : MonoBehaviour
 
     [SerializeField] private FishingController fishingController;
 
+    [SerializeField] private DayNightCycle dayNightCycle;
+
     [SerializeField] private int chanceToSpawn = 20; // Chance to spawn fish (0-100)
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,6 +35,9 @@ public class FishSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!dayNightCycle.dayStarted)
+            justSpawnedFish = Time.time;
+
         if(canSpawnFish && Time.time - justSpawnedFish > currentFishCooldown)
         {
             if(Random.Range(0, 100) < chanceToSpawn)
