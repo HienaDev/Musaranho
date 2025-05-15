@@ -78,7 +78,7 @@ public class DayNightCycle : MonoBehaviour
 
     public void TouchWheel()
     {
-        if (dayStarted)
+        if (!dayStarted)
             StartDay();
         else
             EndDay();
@@ -86,6 +86,7 @@ public class DayNightCycle : MonoBehaviour
 
     public async void StartDay()
     {
+        Debug.Log("started day");   
         currentDay++;
         await ToggleTransition(true).AsyncWaitForCompletion();
 
@@ -99,6 +100,7 @@ public class DayNightCycle : MonoBehaviour
 
     public async void EndDay()
     {
+        Debug.Log("ended day");
         await ToggleTransition(true).AsyncWaitForCompletion();
 
         dayStarted = false;

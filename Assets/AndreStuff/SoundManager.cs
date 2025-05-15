@@ -88,7 +88,22 @@ public class SoundManager : MonoBehaviour
         // couldn't find audio clip, so false for error.
         return false;
     }
-    
+
+    public void PlayClipAtTransform(AudioClip clip, Transform targetTransform, float volume = 1f)
+    {
+        if (clip == null || targetTransform == null) return;
+
+        AudioSource source = targetTransform.GetComponent<AudioSource>();
+        if (source == null)
+            source = targetTransform.gameObject.AddComponent<AudioSource>();
+
+        source.clip = clip;
+        source.volume = volume;
+        source.spatialBlend = 1f; // Optional: makes it 3D spatial
+        source.Play();
+    }
+
+
     public void UpdateSound(SoundType soundType, AudioClip clip)
     {
         if (clip == null) return;

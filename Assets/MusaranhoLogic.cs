@@ -21,6 +21,8 @@ public class MusaranhoLogic : MonoBehaviour
 
     [SerializeField] private Transform bucket;
 
+    private bool activatedSpeed = true;
+
     public void ActivatedBadMusaranho()
     {
         InitalizeMusaranho(bucket.position, false);
@@ -80,10 +82,34 @@ public class MusaranhoLogic : MonoBehaviour
         }
     }
 
+    public void ActivateSpeed()
+    {
+        activatedSpeed = true;
+    }
+
+    public void DeactivateSpeed()
+    {
+        activatedSpeed = false;
+    }
+
     private void MoveTowards(Vector3 target)
     {
-        float speed = (chasingPlayer && !hasRightWeight && killTrigger.activeSelf) ? moveSpeed * 4f : moveSpeed;
+        if (!activatedSpeed)
+            return;
+
+        float speed = (chasingPlayer && !hasRightWeight && killTrigger.activeSelf) ? moveSpeed * 3f : moveSpeed;
+
+        // Movement
+        Vector3 direction = (target - transform.position).normalized;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+
+        // Rotation (sharp turning)
+        if (direction != Vector3.zero)
+        {
+            Quaternion toRotation = Quaternion.LookRotation(direction);
+            float rotationSpeed = 720f; // Degrees per second — adjust for sharpness
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+        }
     }
 
     private IEnumerator WaitAtBucket()
