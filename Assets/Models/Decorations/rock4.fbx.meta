@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 6400b0c20c33ab74f98d35b71879ada4
+guid: ca943e4334e8101419536c1a44b6a0b2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
-      name: texture_0
-    second: {fileID: 2800000, guid: 8ca981e7a5416eb44a1c5fc08da41ca1, type: 3}
+      name: Ps1Rock5Texture
+    second: {fileID: 2800000, guid: 6fb51fd82e9015d4c93f58c183eed407, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
