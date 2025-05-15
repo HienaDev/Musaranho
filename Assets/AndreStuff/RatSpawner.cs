@@ -41,6 +41,7 @@ namespace AndreStuff
         {
             Transform randomTrans = spawnPoints[Random.Range(0, spawnPoints.Length)];
             _spawnedRat = Instantiate(ratPrefab, randomTrans.position, randomTrans.rotation);
+            _spawnedRat.transform.SetParent(randomTrans);
             _elapsed = 0f;
             _timeForNextSpawn = Random.Range(minTime, (minTime + extraRandomTime));
         }
