@@ -140,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
         Ray ray = new Ray(transform.position + Vector3.up * 0.1f, Vector3.down);
         if (Physics.Raycast(ray, out RaycastHit hit, groundCheckDistance, groundLayer))
         {
-            isOnGravel = hit.collider.CompareTag("Gravel");
+            isOnGravel = true;
         }
         else
         {
