@@ -88,7 +88,7 @@ public class FishingController : MonoBehaviour, IItem
             throwableLure.SetActive(false);
             animator.SetTrigger("RodIdle");
 
-            UncastLine();
+            
 
 
         }
@@ -117,7 +117,7 @@ public class FishingController : MonoBehaviour, IItem
 
             currentfish = null;
             ToggleFishingUI(false);
-            UncastLine();
+            
 
             isFishing = false;
             isCast = false;
@@ -382,6 +382,7 @@ public class FishingController : MonoBehaviour, IItem
         {
             ToggleFishingUI(false);
         }
+
 
 
 

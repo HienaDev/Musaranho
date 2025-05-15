@@ -1,40 +1,128 @@
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+using System.Threading.Tasks;
 
 public class DayNightCycle : MonoBehaviour
 {
-
     [SerializeField] private float dayDuration = 120f;
     private float currentTime = 0f;
     private float daySpeed = 1f;
 
-    [SerializeField] private Transform sun; // 50 : 250
+    [SerializeField] private Transform sun; // Rotates from 50 to 250 degrees
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private Transform boat;
+    private bool dayStarted = false;
+    [SerializeField] private Transform boatDayPosition;
+    private Vector3 boatStartPosition;
+
+    [SerializeField] private Image transitionScreen;
+    private Material transitionMaterial;
+
+    [SerializeField] private Transform player;
+    [SerializeField] private Transform playerStartPosition;
+
+    // Custom curve for slow start then faster motion
+    private AnimationCurve slowStartCurve = new AnimationCurve(
+        new Keyframe(0f, 0f),
+        new Keyframe(0.2f, 0.05f),
+        new Keyframe(0.5f, 0.3f),
+        new Keyframe(0.8f, 0.9f),
+        new Keyframe(1f, 1f)
+    );
+
     void Start()
     {
-        
+        boatStartPosition = boat.position;
+
+        if (transitionScreen != null)
+        {
+            transitionMaterial = transitionScreen.material;
+            if (transitionMaterial == null)
+                Debug.LogError("Transition Image has no material assigned.");
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        currentTime += Time.deltaTime * daySpeed;
+        if (dayStarted)
+            currentTime += Time.deltaTime * daySpeed;
 
-        sun.transform.localEulerAngles = new Vector3(Mathf.Lerp(50, 250, currentTime/dayDuration), sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
+        sun.transform.localEulerAngles = new Vector3(
+            Mathf.Lerp(50, 250, currentTime / dayDuration),
+            sun.transform.localEulerAngles.y,
+            sun.transform.localEulerAngles.z
+        );
 
-        if(Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             daySpeed *= 5f;
         }
 
         if (currentTime >= dayDuration)
         {
-            DayOver();
+            EndDay();
         }
+
+
+    }
+
+    public void TouchWheel()
+    {
+        if (dayStarted)
+            StartDay();
+        else
+            EndDay();
+    }
+
+    public async void StartDay()
+    {
+        await ToggleTransition(true).AsyncWaitForCompletion();
+
+        dayStarted = true;
+        sun.transform.localEulerAngles = new Vector3(250, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
+        boat.transform.position = boatDayPosition.position;
+        player.position = playerStartPosition.position;
+
+        await ToggleTransition(false).AsyncWaitForCompletion();
+    }
+
+    public async void EndDay()
+    {
+        await ToggleTransition(true).AsyncWaitForCompletion();
+
+        dayStarted = false;
+        boat.transform.position = boatStartPosition;
+        player.position = playerStartPosition.position;
+
+        await ToggleTransition(false).AsyncWaitForCompletion();
     }
 
     public void DayOver()
     {
+        // Optional: future use
+    }
 
+    public Tween ToggleTransition(bool show)
+    {
+        if (transitionScreen == null || transitionMaterial == null) return null;
+
+        float endValue = show ? 0f : 25f;
+        float duration = 1.5f;
+
+        if (show)
+            transitionScreen.gameObject.SetActive(true);
+
+        return DOTween.To(
+                    () => transitionMaterial.GetFloat("_DistortionStrength"),
+                    x => transitionMaterial.SetFloat("_DistortionStrength", x),
+                    endValue,
+                    duration)
+                .SetEase(slowStartCurve)
+                .OnComplete(() =>
+                {
+                    if (!show)
+                        transitionScreen.gameObject.SetActive(false);
+                });
     }
 }

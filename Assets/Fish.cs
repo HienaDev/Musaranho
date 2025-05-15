@@ -163,6 +163,11 @@ public class Fish : MonoBehaviour
                 }
             }
         }
+
+        if(!lureTarget.gameObject.activeSelf)
+        {
+            GiveUp();
+        }
     }
 
     private void GiveUp(float timeToGiveUp)
