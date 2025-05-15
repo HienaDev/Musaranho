@@ -3,7 +3,62 @@ guid: 6530eaf9b154d4c4280fb5c9536f35cc
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bandage
+    second: {fileID: 2100000, guid: c1c84baede31393429f53da2cf3af234, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: HandStaff
+    second: {fileID: 2100000, guid: 9f18715e0cff8dc4292e1af7fd411bc1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetalLong
+    second: {fileID: 2100000, guid: 3b67a4ec4f5c3a24183b95df0b50c6e8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetalSquare1
+    second: {fileID: 2100000, guid: f083650c341bb0549a803bf7d1d0cef2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetalSquare2
+    second: {fileID: 2100000, guid: 5de73377d30579e49a5ac5aa01597ef3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: MetalSquare3
+    second: {fileID: 2100000, guid: b63f8f2f5fba20a4d9c65c740fca8761, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Role
+    second: {fileID: 2100000, guid: ec60553871a4db440b2b72d5c9c28d13, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: RoleStaff
+    second: {fileID: 2100000, guid: 35c918406753b364f8a092c254793f65, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rope
+    second: {fileID: 2100000, guid: df59aff3f9bb5be45bc235b2cb4836b0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: arms
+    second: {fileID: 2100000, guid: afdc32644858b674d8a917f36263adfe, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rod
+    second: {fileID: 2100000, guid: e68d1cca4f9a894488f513d2e8cf60db, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

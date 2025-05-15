@@ -116,8 +116,10 @@ public class FishingController : MonoBehaviour, IItem
             }
 
             currentfish = null;
-
+            ToggleFishingUI(false);
             UncastLine();
+
+            isFishing = false;  
 
             fishingRod.gameObject.SetActive(false);
             lure.SetActive(false);
@@ -253,7 +255,11 @@ public class FishingController : MonoBehaviour, IItem
     public void RightReleaseItem() { }
     private void CastLine()
     {
-
+        if(currentfish != null)
+        {
+            currentfish.SetFishingState(false);
+            currentfish = null;
+        }
         isCasting = true;
         // Logic to cast the fishing line
         Debug.Log("Casting line...");
@@ -288,7 +294,7 @@ public class FishingController : MonoBehaviour, IItem
     {
 
         //animator.ResetTrigger("Cast");
-
+        
 
 
         animator.SetTrigger("Uncast");
@@ -298,6 +304,7 @@ public class FishingController : MonoBehaviour, IItem
 
     public void UncastAnimatorLine()
     {
+        fishManager.ToggleFishSpawn(false);
         isCasting = false;
         isReeling = false;
         isCast = false;

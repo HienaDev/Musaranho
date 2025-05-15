@@ -38,7 +38,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _BlueOffset: 0.002
-    - _Pixelation: 220
+    - _Pixelation: 300
     - _ScanlineNumber: 700
     - _ScanlineSpeed: -0.003
     m_Colors:

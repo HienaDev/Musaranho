@@ -40,7 +40,7 @@ public class Fish : MonoBehaviour
 
     public void RotateFish(bool reverse)
     {
-        fishRotationPivot.eulerAngles = new Vector3(0, reverse ? 180 : 0, 0);
+        fishRotationPivot.localEulerAngles = new Vector3(0, reverse ? 180 : 0, 0);
     }
     private IEnumerator Start()
     {

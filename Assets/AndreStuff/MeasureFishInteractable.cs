@@ -10,6 +10,8 @@ namespace AndreStuff
         [SerializeField] private float radiusMeasure = 10f;
         private TMP_Text _measureTmp;
 
+        [SerializeField] private Transform weightPosition;
+
         private void Awake()
         {
             _measureTmp = transform.Find("MeasureCanvas").Find("Text").GetComponent<TMP_Text>();
@@ -17,8 +19,15 @@ namespace AndreStuff
 
         public bool MeasureAround()
         {
-            
-            Collider[] hitColliders = Physics.OverlapSphere(transform.position, radiusMeasure);
+
+            Collider[] hitColliders;// = Physics.OverlapSphere(transform.position, radiusMeasure);
+
+            if(weightPosition == null)
+                hitColliders = Physics.OverlapSphere(transform.position, radiusMeasure);
+            else
+            {
+                hitColliders = Physics.OverlapSphere(weightPosition.position, radiusMeasure);
+            }
 
             float totalWeight = 0f;
             foreach (Collider collider in hitColliders)
@@ -40,5 +49,17 @@ namespace AndreStuff
             _measureTmp.text = $"Fishes Weight: {value:F1}";
         }
 
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            if (weightPosition == null)
+                Gizmos.DrawWireSphere(transform.position, radiusMeasure);
+            else
+            {
+                Gizmos.DrawWireSphere(weightPosition.position, radiusMeasure);
+            }
+            
+        }
     }
 }

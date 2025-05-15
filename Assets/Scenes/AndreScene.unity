@@ -658,6 +658,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   throwForce: 2.5
   gameManager: {fileID: 802344287}
+  hand: {fileID: 0}
+  fishingController: {fileID: 0}
 --- !u!1 &266768343
 GameObject:
   m_ObjectHideFlags: 0
@@ -7749,7 +7751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f7ed77c1cec47ad93b28d50ee9a9c66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radiusMeasure: 10
+  radiusMeasure: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

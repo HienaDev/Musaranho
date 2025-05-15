@@ -82,15 +82,17 @@ public class PlayerControl : MonoBehaviour
 
         if (objectInteractable.TryGetComponent(out EquipInteractable equipInteractable))
         {
-            if(objectInteractable.TryGetComponent(out Fish fishScript) && !fishingController.RodBusy)
-            {
-                fishScript.RotateFish(true);
-            }
+            
             fishingController.ToggleFishingRod(false);
             equipInteractable.Equipped();
             equipInteractable.transform.parent = hand;
             equipInteractable.transform.localPosition = Vector3.zero;
             equipInteractable.transform.localEulerAngles = Vector3.zero;
+
+            if (objectInteractable.TryGetComponent(out Fish fishScript) && !fishingController.RodBusy)
+            {
+                fishScript.RotateFish(true);
+            }
         }
     }
 
