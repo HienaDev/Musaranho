@@ -21,7 +21,8 @@ public class ControlFishSpawn : MonoBehaviour
     {
         if(Time.time - justCheckedTime > checkCooldown)
         {
-            if(transform.position.y > 0.5f && fishSpawning)
+            fishSpawning = fishSpawner.canSpawnFish;
+            if (transform.position.y > 0.5f && fishSpawning)
             {
                 fishSpawning = false;
                 fishSpawner.ToggleFishSpawn(false);

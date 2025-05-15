@@ -71,8 +71,10 @@ public class Fish : MonoBehaviour
     public void SetFishingState(bool state)
     {
         beingFished = state;
+        
         if (!state)
         {
+            canGoOnLure = false ;
             GiveUp();
         }
     }

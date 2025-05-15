@@ -74,6 +74,13 @@ public class PlayerControl : MonoBehaviour
 
     private void InteractedWithInteractable(GameObject objectInteractable)
     {
+        if (objectInteractable.TryGetComponent(out Interactable interactable))
+        {
+            // returns true if complete
+            interactable.Interact();
+        }
+
+
         if (objectInteractable.TryGetComponent(out MeasureFishInteractable measureFishInteractable))
         {
             // returns true if complete
@@ -85,6 +92,8 @@ public class PlayerControl : MonoBehaviour
             
             fishingController.ToggleFishingRod(false);
             equipInteractable.Equipped();
+            if(!equipInteractable.gameObject.activeSelf)
+                equipInteractable.gameObject.SetActive(true);
             equipInteractable.transform.parent = hand;
             equipInteractable.transform.localPosition = Vector3.zero;
             equipInteractable.transform.localEulerAngles = Vector3.zero;
