@@ -12,6 +12,12 @@ namespace AndreStuff
 
         [SerializeField] private Transform weightPosition;
 
+        [SerializeField] private float initialWeightQuota = 30f;
+        private float currentWeight = 0f;
+
+        [SerializeField] private Vector2 pointerAngles = new Vector2(90f, -75f);
+        [SerializeField] private Transform pointer;
+
         private void Awake()
         {
             _measureTmp = transform.Find("MeasureCanvas").Find("Text").GetComponent<TMP_Text>();
@@ -41,6 +47,8 @@ namespace AndreStuff
                 }
             }
             UpdateMeasureCanvas(totalWeight);
+            currentWeight = totalWeight;
+            pointer.transform.localEulerAngles = Mathf.Lerp(pointerAngles.x, pointerAngles.y, currentWeight / initialWeightQuota) * Vector3.forward;
             return false;
         }
 

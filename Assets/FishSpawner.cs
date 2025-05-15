@@ -10,7 +10,7 @@ public class FishSpawner : MonoBehaviour
     private float currentFishCooldown = 0f;
     private float justSpawnedFish;
 
-    private bool canSpawnFish = false;
+    public bool canSpawnFish = false;
 
     [SerializeField] private Transform spawnUnderThis; // The object to spawn under
     [SerializeField] private float spawnRadius = 5f; // Maximum distance from center
@@ -27,7 +27,7 @@ public class FishSpawner : MonoBehaviour
     {
         justSpawnedFish = Time.time;
 
-        currentFishCooldown = Random.Range(chanceToSpawn - 2f, chanceToSpawn + 2f);
+        currentFishCooldown = Random.Range(fishSpawnCooldown - 2f, fishSpawnCooldown + 2f);
     }
 
     // Update is called once per frame
@@ -41,7 +41,7 @@ public class FishSpawner : MonoBehaviour
             }
 
             justSpawnedFish = Time.time;
-            currentFishCooldown = Random.Range(chanceToSpawn - 2f, chanceToSpawn + 2f);
+            currentFishCooldown = Random.Range(fishSpawnCooldown - 2f, fishSpawnCooldown + 2f);
         }
     }
 
