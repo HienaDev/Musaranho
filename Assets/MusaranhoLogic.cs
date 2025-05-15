@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class MusaranhoLogic : MonoBehaviour
 {
@@ -10,11 +11,13 @@ public class MusaranhoLogic : MonoBehaviour
     private bool goingToBucket = false;
     private bool returningToStart = false;
     private bool chasingPlayer = false;
+    private bool waitingAtBucket = false;
 
     public float moveSpeed = 3f;
+    public float waitTimeAtBucket = 1.5f; // Time to pause at the bucket
     public Transform player;
     public GameObject killTrigger;
-    Animator animator;
+    private Animator animator;
 
     [SerializeField] private Transform bucket;
 
@@ -45,7 +48,7 @@ public class MusaranhoLogic : MonoBehaviour
 
     void Update()
     {
-        if (!isInitialized) return;
+        if (!isInitialized || waitingAtBucket) return;
 
         if (goingToBucket)
         {
@@ -54,17 +57,7 @@ public class MusaranhoLogic : MonoBehaviour
             if (Vector3.Distance(transform.position, bucketPosition) < 0.1f)
             {
                 goingToBucket = false;
-
-                if (hasRightWeight)
-                {
-                    returningToStart = true;
-                }
-                else
-                {
-                    chasingPlayer = true;
-                    if (killTrigger != null)
-                        killTrigger.SetActive(true);
-                }
+                StartCoroutine(WaitAtBucket());
             }
         }
         else if (returningToStart)
@@ -79,7 +72,9 @@ public class MusaranhoLogic : MonoBehaviour
         }
         else if (chasingPlayer && player != null)
         {
-            
+            if (animator != null && !animator.enabled)
+                animator.enabled = true;
+
             animator.SetTrigger("Running");
             MoveTowards(player.position);
         }
@@ -87,10 +82,33 @@ public class MusaranhoLogic : MonoBehaviour
 
     private void MoveTowards(Vector3 target)
     {
-        if(!hasRightWeight && killTrigger.activeSelf)
-            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * 2 * Time.deltaTime);
+        float speed = (chasingPlayer && !hasRightWeight && killTrigger.activeSelf) ? moveSpeed * 4f : moveSpeed;
+        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+    }
 
+    private IEnumerator WaitAtBucket()
+    {
+        waitingAtBucket = true;
+
+        if (animator != null)
+            animator.enabled = false; // Disable animator during pause
+
+        yield return new WaitForSeconds(waitTimeAtBucket);
+
+        if (hasRightWeight)
+        {
+            returningToStart = true;
+        }
         else
-            transform.position = Vector3.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
+        {
+            chasingPlayer = true;
+            if (killTrigger != null)
+                killTrigger.SetActive(true);
+        }
+
+        if (animator != null)
+            animator.enabled = true; // Re-enable animator after pause
+
+        waitingAtBucket = false;
     }
 }
