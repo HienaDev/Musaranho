@@ -49,15 +49,11 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        LoadJsonData();
-    }
-
-    private void LoadJsonData()
-    {
-        TextAsset jsonTextAsset = Resources.Load<TextAsset>("gameplayData");
-        Debug.Log("Text: "+ jsonTextAsset.text);
-        GameplayData data = JsonUtility.FromJson<GameplayData>(jsonTextAsset.text);
-        _dailyWeightNeeded = data.values;
+        _dailyWeightNeeded = new float[] {1.5f, 4f, 10f, 25f, 100f, 220f, 400f, 750f};
+        foreach (float f in _dailyWeightNeeded)
+        {
+            Debug.Log("Weight: " + f);
+        }
     }
 
     public void ClickEscapeButton()
