@@ -137,6 +137,9 @@ public class FishingController : MonoBehaviour, IItem
             fishingRod.gameObject.SetActive(false);
             lure.SetActive(false);
             throwableLure.SetActive(false);
+            animator.ResetTrigger("Throw");
+            animator.ResetTrigger("Uncast");
+            animator.ResetTrigger("Cast");
             animator.SetTrigger("Nothing");
         }
     }

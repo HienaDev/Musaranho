@@ -20,6 +20,7 @@ namespace AndreStuff
 
         private GameManager _gameManager;
 
+        [SerializeField] private UnityEvent defaultEvent;
         [SerializeField] private UnityEvent altarEventGood;
         [SerializeField] private UnityEvent altarEventBad;
         [SerializeField] private UnityEvent altarEventDefault;
@@ -68,6 +69,8 @@ namespace AndreStuff
             }
             UpdateMeasureCanvas(totalWeight);
             currentWeight = totalWeight;
+
+            defaultEvent.Invoke();
 
             if (!isAltar)
             {
