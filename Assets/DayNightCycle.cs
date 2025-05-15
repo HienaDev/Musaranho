@@ -23,7 +23,7 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform playerStartPosition;
 
-    public int currentDay = 0;
+    public int currentDay = 1;
     private GameManager gameManager;
 
 
@@ -87,9 +87,9 @@ public class DayNightCycle : MonoBehaviour
     public async void StartDay()
     {
         Debug.Log("started day");   
-        currentDay++;
+        
         await ToggleTransition(true).AsyncWaitForCompletion();
-
+        await Task.Delay(1000);
         dayStarted = true;
 
         boat.transform.position = boatDayPosition.position;
@@ -101,7 +101,10 @@ public class DayNightCycle : MonoBehaviour
     public async void EndDay()
     {
         Debug.Log("ended day");
+        currentDay++;
         await ToggleTransition(true).AsyncWaitForCompletion();
+
+        await Task.Delay(1000);
 
         dayStarted = false;
         sun.transform.localEulerAngles = new Vector3(250, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);

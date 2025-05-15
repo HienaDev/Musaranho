@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
             day = _dayNightCycle.currentDay;
 
         if (_dailyWeightNeeded == null)
-            return 30;
+            return 90f * _dayNightCycle.currentDay;
 
         return _dailyWeightNeeded[day];
     }
@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        _dailyWeightNeeded = new float[] {1.5f, 4f, 10f, 25f, 100f, 220f, 400f, 750f};
+        _dailyWeightNeeded = new float[] {50f, 150f, 300f, 500f, 600f, 600f, 600f, 600f };
         foreach (float f in _dailyWeightNeeded)
         {
             Debug.Log("Weight: " + f);
