@@ -3,7 +3,6 @@ using UnityEngine;
 public class FollowCursor : MonoBehaviour
 {
     
-    
     [SerializeField] private Canvas parentCanvas;
     [SerializeField] private RectTransform cursorRectTransform;
 
@@ -14,10 +13,8 @@ public class FollowCursor : MonoBehaviour
 
     private void UpdateCursorPosition()
     {
-        // Get the mouse position
         Vector2 mousePosition = Input.mousePosition;
         
-        // Convert mouse position to canvas space if using Screen Space - Camera or World Space
         if (parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
         {
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -30,7 +27,6 @@ public class FollowCursor : MonoBehaviour
         }
         else
         {
-            // For Screen Space - Overlay, we can use the mouse position directly
             cursorRectTransform.position = mousePosition;
         }
     }

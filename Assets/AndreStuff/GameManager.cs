@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         _canPlayerMove = false;
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
         Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.visible = false;
         CenterCursor();
     }
 
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
         _canPlayerMove = true;
         canvasMenu.gameObject.SetActive(!_canPlayerMove);
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        //Cursor.visible = false;
         CenterCursor();
     }
 
