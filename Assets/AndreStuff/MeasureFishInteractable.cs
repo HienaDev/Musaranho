@@ -84,6 +84,10 @@ namespace AndreStuff
                     eventAtPointerAnimationEnd.Invoke();
                 }) ;
             }
+            else
+            {
+                Debug.Log("ALTAR: currentWeight: " + currentWeight + " targetWEight: " + _gameManager.GetDailyWeightNeeded());
+            }
 
             if (isAltar && currentWeight >= _gameManager.GetDailyWeightNeeded())
             {
