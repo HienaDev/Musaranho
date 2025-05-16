@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform mainCanvas;
     
     private bool _canPlayerMove = false;
+    public Vector3 GetPlayerLocation() => playerControl != null ? playerControl.transform.position : Vector3.zero;
     public bool CanPlayerMove() => _canPlayerMove;
     public void SetPlayerMove(bool value) => _canPlayerMove = value;
 

@@ -28,6 +28,12 @@ public class DayNightCycle : MonoBehaviour
 
     private bool firstDay = false;
 
+    [SerializeField] private AudioClip transitionInClip;
+    [SerializeField] private AudioClip transitionOutClip;
+    private AudioSource audioSource;
+
+    [SerializeField] private BucketInteractable bucketInteractable;
+    private Vector3 bucketOriginalPos;
 
     // Custom curve for slow start then faster motion
     private AnimationCurve slowStartCurve = new AnimationCurve(
@@ -38,10 +44,22 @@ public class DayNightCycle : MonoBehaviour
         new Keyframe(1f, 1f)
     );
 
+    private Vector3 playerInitialPosition; // Add this at the top with other fields
+
     void Start()
     {
+        bucketOriginalPos = bucketInteractable.transform.position;
+
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+
         gameManager = FindAnyObjectByType<GameManager>();
         boatStartPosition = boat.position;
+        playerInitialPosition = player.position; // <--- Save actual start position
 
         if (transitionScreen != null)
         {
@@ -50,6 +68,7 @@ public class DayNightCycle : MonoBehaviour
                 Debug.LogError("Transition Image has no material assigned.");
         }
     }
+
 
     void Update()
     {
@@ -84,6 +103,35 @@ public class DayNightCycle : MonoBehaviour
         else
             EndDay();
     }
+
+    public async void StartNewDay()
+    {
+        Debug.Log("Starting new day with transition...");
+
+        // Transition in
+        await ToggleTransition(true).AsyncWaitForCompletion();
+        await Task.Delay(1000); // Optional pause for smoother effect
+
+        // Reset key variables
+        currentTime = 0f;
+        daySpeed = 1f;
+        dayStarted = false;
+
+        // Reset positions
+        player.position = playerInitialPosition;
+        boat.position = boatStartPosition;
+        sun.transform.localEulerAngles = new Vector3(0f, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
+
+        // Transition out
+        await ToggleTransition(false).AsyncWaitForCompletion();
+
+        bucketInteractable.transform.position = bucketOriginalPos;
+        bucketInteractable.DestroyAllFish();
+
+        Debug.Log("New day initialized.");
+    }
+
+
 
     public async void StartDay()
     {
@@ -138,16 +186,36 @@ public class DayNightCycle : MonoBehaviour
         if (show)
             transitionScreen.gameObject.SetActive(true);
 
-        return DOTween.To(
-                    () => transitionMaterial.GetFloat("_DistortionStrength"),
-                    x => transitionMaterial.SetFloat("_DistortionStrength", x),
-                    endValue,
-                    duration)
-                .SetEase(slowStartCurve)
-                .OnComplete(() =>
-                {
-                    if (!show)
-                        transitionScreen.gameObject.SetActive(false);
-                });
+        Tween tween = DOTween.To(
+            () => transitionMaterial.GetFloat("_DistortionStrength"),
+            x => transitionMaterial.SetFloat("_DistortionStrength", x),
+            endValue,
+            duration)
+            .SetEase(slowStartCurve)
+            .OnComplete(() =>
+            {
+                if (!show)
+                    transitionScreen.gameObject.SetActive(false);
+            });
+
+        // Only for transition in: schedule audio to play at third keyframe (~50% time)
+        if (show && audioSource != null && transitionInClip != null)
+        {
+            float playTime = duration * 0.5f; // third keyframe is at 0.5
+            DOVirtual.DelayedCall(playTime, () =>
+            {
+                audioSource.PlayOneShot(transitionInClip);
+            });
+        }
+
+        // Always play transition out sound immediately
+        if (!show && audioSource != null && transitionOutClip != null)
+        {
+            audioSource.PlayOneShot(transitionOutClip);
+        }
+
+        return tween;
     }
+
+
 }

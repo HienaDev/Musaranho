@@ -35,7 +35,7 @@ public class FishSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!dayNightCycle.dayStarted)
+        if (!dayNightCycle.dayStarted && fishingController.isCast)
             justSpawnedFish = Time.time;
 
         if(canSpawnFish && Time.time - justSpawnedFish > currentFishCooldown)

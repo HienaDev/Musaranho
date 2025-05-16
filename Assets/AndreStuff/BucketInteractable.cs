@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class BucketInteractable : MonoBehaviour
 {
-    
     [SerializeField] private Transform fishesStorageParent;
     [SerializeField] private Transform lowestPoint;
     [SerializeField] private Transform highestPoint;
-    
+
     public void StoreFish(GameObject fishObject)
     {
         fishObject.transform.parent = fishesStorageParent;
@@ -23,5 +22,14 @@ public class BucketInteractable : MonoBehaviour
         float v = (float)fishCount / 10;
         fishObject.transform.rotation = Quaternion.identity;
         fishObject.transform.localPosition = Vector3.Lerp(lowestPoint.localPosition, highestPoint.localPosition, v);
+    }
+
+    public void DestroyAllFish()
+    {
+        for (int i = fishesStorageParent.childCount - 1; i >= 0; i--)
+        {
+            Transform fish = fishesStorageParent.GetChild(i);
+            Destroy(fish.gameObject);
+        }
     }
 }

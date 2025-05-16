@@ -25,10 +25,17 @@ public class MusaranhoLogic : MonoBehaviour
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip screeshClip;
-    [SerializeField] private AudioClip sniffingClip; // 🆕 Add sniffing clip here
+    [SerializeField] private AudioClip sniffingClip;
 
     private bool activatedSpeed = true;
     private bool screeshPlayed = false;
+
+    private DayNightCycle dayNightCycle;
+
+    private void Start()
+    {
+        dayNightCycle = FindAnyObjectByType<DayNightCycle>();
+    }
 
     private void Update()
     {
@@ -58,6 +65,12 @@ public class MusaranhoLogic : MonoBehaviour
             {
                 returningToStart = false;
                 isInitialized = false;
+
+                // ✅ Start a new day if it had the right weight
+                if (hasRightWeight && dayNightCycle != null)
+                {
+                    dayNightCycle.StartNewDay();
+                }
             }
         }
         else if (chasingPlayer && player != null)
