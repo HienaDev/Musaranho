@@ -23,9 +23,10 @@ public class DayNightCycle : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private Transform playerStartPosition;
 
-    public int currentDay = 1;
+    public int currentDay = 0;
     private GameManager gameManager;
 
+    private bool firstDay = false;
 
 
     // Custom curve for slow start then faster motion
@@ -58,7 +59,7 @@ public class DayNightCycle : MonoBehaviour
             return;
 
         sun.transform.localEulerAngles = new Vector3(
-            Mathf.Lerp(50, 250, currentTime / dayDuration),
+            Mathf.Lerp(0, 250, currentTime / dayDuration),
             sun.transform.localEulerAngles.y,
             sun.transform.localEulerAngles.z
         );
@@ -68,7 +69,7 @@ public class DayNightCycle : MonoBehaviour
             daySpeed *= 5f;
         }
 
-        if (currentTime >= dayDuration)
+        if (currentTime >= dayDuration && dayStarted)
         {
             EndDay();
         }
@@ -86,11 +87,19 @@ public class DayNightCycle : MonoBehaviour
 
     public async void StartDay()
     {
-        Debug.Log("started day");   
-        
+        Debug.Log("started day");
+        dayStarted = true;
+        if (firstDay)
+        {
+            firstDay = false;
+
+        }
+        else
+            currentDay++;
+
         await ToggleTransition(true).AsyncWaitForCompletion();
         await Task.Delay(1000);
-        dayStarted = true;
+
 
         boat.transform.position = boatDayPosition.position;
         player.position = playerStartPosition.position;
@@ -101,12 +110,12 @@ public class DayNightCycle : MonoBehaviour
     public async void EndDay()
     {
         Debug.Log("ended day");
-        currentDay++;
+        dayStarted = false;
         await ToggleTransition(true).AsyncWaitForCompletion();
 
         await Task.Delay(1000);
 
-        dayStarted = false;
+        
         sun.transform.localEulerAngles = new Vector3(250, sun.transform.localEulerAngles.y, sun.transform.localEulerAngles.z);
         boat.transform.position = boatStartPosition;
         player.position = playerStartPosition.position;

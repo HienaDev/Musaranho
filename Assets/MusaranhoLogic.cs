@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class MusaranhoLogic : MonoBehaviour
@@ -25,6 +25,7 @@ public class MusaranhoLogic : MonoBehaviour
     [SerializeField] private AudioSource footstepSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip screeshClip;
+    [SerializeField] private AudioClip sniffingClip; // 🆕 Add sniffing clip here
 
     private bool activatedSpeed = true;
     private bool screeshPlayed = false;
@@ -89,15 +90,8 @@ public class MusaranhoLogic : MonoBehaviour
         }
     }
 
-    public void ActivatedBadMusaranho()
-    {
-        InitalizeMusaranho(bucket.position, false);
-    }
-
-    public void ActivatedGoodMusaranho()
-    {
-        InitalizeMusaranho(bucket.position, true);
-    }
+    public void ActivatedBadMusaranho() => InitalizeMusaranho(bucket.position, false);
+    public void ActivatedGoodMusaranho() => InitalizeMusaranho(bucket.position, true);
 
     public void InitalizeMusaranho(Vector3 bucketPos, bool correctWeight)
     {
@@ -110,9 +104,7 @@ public class MusaranhoLogic : MonoBehaviour
         screeshPlayed = false;
 
         if (killTrigger != null)
-        {
             killTrigger.SetActive(false);
-        }
     }
 
     private bool MoveTowards(Vector3 target)
@@ -143,7 +135,23 @@ public class MusaranhoLogic : MonoBehaviour
 
         UpdateFootstepAudio(false);
 
+        // 🆕 Start sniffing sound
+        if (sfxSource != null && sniffingClip != null)
+        {
+            sfxSource.clip = sniffingClip;
+            sfxSource.loop = true;
+            sfxSource.Play();
+        }
+
         yield return new WaitForSeconds(waitTimeAtBucket);
+
+        // 🆕 Stop sniffing sound
+        if (sfxSource != null && sfxSource.clip == sniffingClip)
+        {
+            sfxSource.Stop();
+            sfxSource.clip = null;
+            sfxSource.loop = false;
+        }
 
         if (hasRightWeight)
         {
@@ -156,7 +164,6 @@ public class MusaranhoLogic : MonoBehaviour
             if (killTrigger != null)
                 killTrigger.SetActive(true);
 
-            // Screesh sound
             if (!screeshPlayed && sfxSource != null && screeshClip != null)
             {
                 sfxSource.PlayOneShot(screeshClip);
