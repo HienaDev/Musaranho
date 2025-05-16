@@ -14,14 +14,80 @@ public class MusaranhoLogic : MonoBehaviour
     private bool waitingAtBucket = false;
 
     public float moveSpeed = 3f;
-    public float waitTimeAtBucket = 1.5f; // Time to pause at the bucket
+    public float waitTimeAtBucket = 1.5f;
     public Transform player;
     public GameObject killTrigger;
     private Animator animator;
 
     [SerializeField] private Transform bucket;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource footstepSource;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioClip screeshClip;
+
     private bool activatedSpeed = true;
+    private bool screeshPlayed = false;
+
+    private void Update()
+    {
+        if (!isInitialized || waitingAtBucket)
+        {
+            UpdateFootstepAudio(false);
+            return;
+        }
+
+        bool isMoving = false;
+
+        if (goingToBucket)
+        {
+            isMoving = MoveTowards(bucketPosition);
+
+            if (Vector3.Distance(transform.position, bucketPosition) < 0.1f)
+            {
+                goingToBucket = false;
+                StartCoroutine(WaitAtBucket());
+            }
+        }
+        else if (returningToStart)
+        {
+            isMoving = MoveTowards(startingPosition);
+
+            if (Vector3.Distance(transform.position, startingPosition) < 0.1f)
+            {
+                returningToStart = false;
+                isInitialized = false;
+            }
+        }
+        else if (chasingPlayer && player != null)
+        {
+            if (animator != null && !animator.enabled)
+                animator.enabled = true;
+
+            animator.SetTrigger("Running");
+            isMoving = MoveTowards(player.position);
+        }
+
+        UpdateFootstepAudio(isMoving);
+    }
+
+    private void UpdateFootstepAudio(bool isMoving)
+    {
+        if (footstepSource == null) return;
+
+        if (isMoving)
+        {
+            if (!footstepSource.isPlaying)
+                footstepSource.Play();
+
+            footstepSource.volume = 1f;
+        }
+        else
+        {
+            footstepSource.volume = 0f;
+            footstepSource.Stop();
+        }
+    }
 
     public void ActivatedBadMusaranho()
     {
@@ -41,6 +107,7 @@ public class MusaranhoLogic : MonoBehaviour
         hasRightWeight = correctWeight;
         isInitialized = true;
         goingToBucket = true;
+        screeshPlayed = false;
 
         if (killTrigger != null)
         {
@@ -48,68 +115,23 @@ public class MusaranhoLogic : MonoBehaviour
         }
     }
 
-    void Update()
+    private bool MoveTowards(Vector3 target)
     {
-        if (!isInitialized || waitingAtBucket) return;
-
-        if (goingToBucket)
-        {
-            MoveTowards(bucketPosition);
-
-            if (Vector3.Distance(transform.position, bucketPosition) < 0.1f)
-            {
-                goingToBucket = false;
-                StartCoroutine(WaitAtBucket());
-            }
-        }
-        else if (returningToStart)
-        {
-            MoveTowards(startingPosition);
-
-            if (Vector3.Distance(transform.position, startingPosition) < 0.1f)
-            {
-                returningToStart = false;
-                isInitialized = false;
-            }
-        }
-        else if (chasingPlayer && player != null)
-        {
-            if (animator != null && !animator.enabled)
-                animator.enabled = true;
-
-            animator.SetTrigger("Running");
-            MoveTowards(player.position);
-        }
-    }
-
-    public void ActivateSpeed()
-    {
-        activatedSpeed = true;
-    }
-
-    public void DeactivateSpeed()
-    {
-        activatedSpeed = false;
-    }
-
-    private void MoveTowards(Vector3 target)
-    {
-        if (!activatedSpeed)
-            return;
+        if (!activatedSpeed) return false;
 
         float speed = (chasingPlayer && !hasRightWeight && killTrigger.activeSelf) ? moveSpeed * 3f : moveSpeed;
 
-        // Movement
         Vector3 direction = (target - transform.position).normalized;
         transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
 
-        // Rotation (sharp turning)
         if (direction != Vector3.zero)
         {
             Quaternion toRotation = Quaternion.LookRotation(direction);
-            float rotationSpeed = 720f; // Degrees per second — adjust for sharpness
+            float rotationSpeed = 720f;
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
+
+        return direction.magnitude > 0.01f;
     }
 
     private IEnumerator WaitAtBucket()
@@ -117,7 +139,9 @@ public class MusaranhoLogic : MonoBehaviour
         waitingAtBucket = true;
 
         if (animator != null)
-            animator.enabled = false; // Disable animator during pause
+            animator.enabled = false;
+
+        UpdateFootstepAudio(false);
 
         yield return new WaitForSeconds(waitTimeAtBucket);
 
@@ -128,13 +152,24 @@ public class MusaranhoLogic : MonoBehaviour
         else
         {
             chasingPlayer = true;
+
             if (killTrigger != null)
                 killTrigger.SetActive(true);
+
+            // Screesh sound
+            if (!screeshPlayed && sfxSource != null && screeshClip != null)
+            {
+                sfxSource.PlayOneShot(screeshClip);
+                screeshPlayed = true;
+            }
         }
 
         if (animator != null)
-            animator.enabled = true; // Re-enable animator after pause
+            animator.enabled = true;
 
         waitingAtBucket = false;
     }
+
+    public void ActivateSpeed() => activatedSpeed = true;
+    public void DeactivateSpeed() => activatedSpeed = false;
 }
