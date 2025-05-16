@@ -2,6 +2,6 @@
 {
     public enum SoundType
     {
-        SOUND1
+        RAT_JUMPSCARE, RAT_TIKUS
     }
 }

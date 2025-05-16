@@ -1,4 +1,5 @@
 using System.Collections;
+using AndreStuff;
 using UnityEngine;
 
 public class RatScript : MonoBehaviour
@@ -39,9 +40,12 @@ public class RatScript : MonoBehaviour
 
     private IEnumerator RatGotFoundAnime()
     {
-        Debug.Log("RAT SEEN!!");
+        //Debug.Log("RAT SEEN!!");
+        SoundManager.Instance.PlaySound(SoundType.RAT_JUMPSCARE, null, 0.85f, 1.2f);
         _hasBeenSeen = true;
         yield return new WaitForSeconds(waitTimeForRun);
+        SoundManager.Instance.PlaySound(SoundType.RAT_TIKUS, transform.gameObject, true);
+        StartCoroutine(LowerSound((timeToDisappear + timeBeforeStartDisappearing)/1.5f));
         _animator.SetBool("seen", true);
         _shouldRun = true;
         yield return new WaitForSeconds(timeBeforeStartDisappearing);
@@ -54,6 +58,16 @@ public class RatScript : MonoBehaviour
             yield return null;
         }
         Destroy(gameObject);
+    }
+
+    private IEnumerator LowerSound(float time)
+    {
+        AudioSource audioSource = GetComponent<AudioSource>();
+        while (true)
+        {
+            audioSource.volume -= (1f / time) * Time.deltaTime;
+            yield return null;
+        }
     }
     
     
