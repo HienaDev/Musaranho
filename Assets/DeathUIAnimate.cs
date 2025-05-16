@@ -12,6 +12,7 @@ public class DeathUIAnimate : MonoBehaviour
 
     [Header("Text Fade-In")]
     [SerializeField] private TextMeshProUGUI deathText;
+    [SerializeField] private TextMeshProUGUI restartText;
     [SerializeField] private float textFadeDuration = 1f;
 
     private void Start()
@@ -27,6 +28,7 @@ public class DeathUIAnimate : MonoBehaviour
         Color startColor = deathText.color;
         startColor.a = 0f;
         deathText.color = startColor;
+        restartText.color = startColor;
 
         // Animate distortion
         DOTween.To(() => distortionMaterial.GetFloat("_DistortionStrength"),
@@ -38,6 +40,7 @@ public class DeathUIAnimate : MonoBehaviour
                {
                    // Fade in text alpha
                    deathText.DOFade(1f, textFadeDuration).SetEase(Ease.InOutSine);
+                   restartText.DOFade(1f, textFadeDuration).SetEase(Ease.InOutSine);
                });
     }
 }
