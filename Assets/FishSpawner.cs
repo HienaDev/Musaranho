@@ -2,9 +2,8 @@ using UnityEngine;
 
 public class FishSpawner : MonoBehaviour
 {
-
     [Header("Fish Spawn Settings")]
-    public Fish fishPrefab;         // Prefab of the fish to spawn
+    public Fish fishPrefab; // Prefab of the fish to spawn
 
     [SerializeField] private float fishSpawnCooldown = 10f;
     private float currentFishCooldown = 0f;
@@ -12,35 +11,32 @@ public class FishSpawner : MonoBehaviour
 
     public bool canSpawnFish = false;
 
-    [SerializeField] private Transform spawnUnderThis; // The object to spawn under
-    [SerializeField] private float spawnRadius = 5f; // Maximum distance from center
-    [SerializeField] private int spawnCount = 13; // How many objects to spawn
-    [SerializeField] private float minHeight = 0.5f; // Minimum height below the object
-    [SerializeField] private float maxHeight = 2f; // Maximum height below the object
+    [SerializeField] private Transform spawnUnderThis; // Object above which fish must spawn below
+    [SerializeField] private Transform waterSurface;   // New: the water surface object (for Y level)
+
+    [SerializeField] private float spawnRadius = 5f;
+    [SerializeField] private int spawnCount = 13;
+    [SerializeField] private float minHeight = 0.5f;
+    [SerializeField] private float maxHeight = 2f;
 
     [SerializeField] private FishingController fishingController;
-
     [SerializeField] private DayNightCycle dayNightCycle;
+    [SerializeField] private int chanceToSpawn = 20;
 
-    [SerializeField] private int chanceToSpawn = 20; // Chance to spawn fish (0-100)
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         justSpawnedFish = Time.time;
-
         currentFishCooldown = Random.Range(fishSpawnCooldown - 2f, fishSpawnCooldown + 2f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!dayNightCycle.dayStarted && fishingController.isCast)
             justSpawnedFish = Time.time;
 
-        if(canSpawnFish && Time.time - justSpawnedFish > currentFishCooldown)
+        if (canSpawnFish && Time.time - justSpawnedFish > currentFishCooldown)
         {
-            if(Random.Range(0, 100) < chanceToSpawn)
+            if (Random.Range(0, 100) < chanceToSpawn)
             {
                 SpawnFish();
             }
@@ -52,30 +48,32 @@ public class FishSpawner : MonoBehaviour
 
     private void SpawnFish()
     {
+        if (waterSurface == null)
+        {
+            Debug.LogWarning("Water surface not assigned! Spawning fish at lure height.");
+        }
+
+        float waterY = waterSurface != null ? waterSurface.position.y : spawnUnderThis.position.y;
+
         for (int i = 0; i < spawnCount; i++)
         {
-            // Get random angle between 180 degrees (left) and 360 degrees (right)
             float randomAngle = Random.Range(0f, 360f);
-
-            // Convert angle to radians for calculations
             float angleInRadians = randomAngle * Mathf.Deg2Rad;
 
-            // Calculate X and Z positions using the angle
-            float x = Mathf.Cos(angleInRadians) * Random.Range(spawnRadius - 2.5f, spawnRadius + 2.5f);
-            float z = Mathf.Sin(angleInRadians) * Random.Range(spawnRadius - 2.5f, spawnRadius + 2.5f);
+            // Spawn around the lure on X and Z axes
+            float x = spawnUnderThis.position.x + Mathf.Cos(angleInRadians) * Random.Range(spawnRadius - 2.5f, spawnRadius + 2.5f);
+            float z = spawnUnderThis.position.z + Mathf.Sin(angleInRadians) * Random.Range(spawnRadius - 2.5f, spawnRadius + 2.5f);
 
-            // Get random Y position (below the object)
-            float y = -Random.Range(minHeight, maxHeight);
+            // Y is below water surface
+            float y = waterY - Random.Range(minHeight, maxHeight);
 
-            // Create spawn position relative to the target object
-            Vector3 spawnPosition = spawnUnderThis.position + new Vector3(x, y, z);
+            Vector3 spawnPosition = new Vector3(x, y, z);
 
-            // Instantiate the object
             Fish fish = Instantiate(fishPrefab, spawnPosition, Quaternion.identity);
-
-            fish.SetLureTarget(spawnUnderThis, fishingController); // Set the target for the fish to swim towards
+            fish.SetLureTarget(spawnUnderThis, fishingController);
         }
     }
+
 
     public void ToggleFishSpawn(bool canSpawn)
     {

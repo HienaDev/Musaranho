@@ -119,6 +119,8 @@ public class FishingController : MonoBehaviour, IItem
                 currentfish.SetFishingState(false);
             }
 
+            FindAnyObjectByType<FishSpawner>().canSpawnFish = false;
+
             currentfish = null;
             ToggleFishingUI(false);
             
@@ -271,7 +273,23 @@ public class FishingController : MonoBehaviour, IItem
     public void RightReleaseItem() { }
     private void CastLine()
     {
-        if(currentfish != null)
+
+        if (hasFishHooked)
+        {
+            if (currentfish != null)
+            {
+                currentfish.SetFishingState(false);
+            }
+            hasFishHooked = false;
+            bait.SetActive(true);
+            hookedFish.AddComponent<Rigidbody>();
+            hookedFish.AddComponent<EquipInteractable>();
+            hookedFish.GetComponent<Collider>().isTrigger = false;
+            hookedFish.transform.parent = fishHolder.transform;
+            hookedFish = null;
+        }
+
+        if (currentfish != null)
         {
             currentfish.SetFishingState(false);
             currentfish = null;
