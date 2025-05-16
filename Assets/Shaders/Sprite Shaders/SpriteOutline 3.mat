@@ -43,7 +43,7 @@ Material:
     m_Floats:
     - _Distortion: 1
     - _DistortionScale: 10
-    - _DistortionStrength: 25
+    - _DistortionStrength: 23.773617
     - _Outline: 1
     - _OutlineSize: 0.03
     - _OutlineThickness: 0.02
