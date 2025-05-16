@@ -119,6 +119,8 @@ public class FishingController : MonoBehaviour, IItem
                 currentfish.SetFishingState(false);
             }
 
+            FindAnyObjectByType<FishSpawner>().canSpawnFish = false;
+
             currentfish = null;
             ToggleFishingUI(false);
             
